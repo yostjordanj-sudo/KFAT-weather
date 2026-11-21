@@ -27,8 +27,8 @@ table{border-collapse:collapse;width:100%}
 .media{margin-top:8px}
 .mbox{background:#161f2c;border:1px solid #2b394a;border-radius:6px;padding:6px;height:295px}
 .mtitle{font-size:11px;font-weight:bold;color:#9ecbff;margin-bottom:5px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
-.rwrap{width:100%;height:262px;overflow:hidden;background:#000;border-radius:4px;position:relative}
-#rad{width:100%;height:100%;object-fit:contain;transform:scale(1.85);transform-origin:48% 46%}
+.rwrap{width:100%;height:262px;overflow:hidden;background:#0a1118;border-radius:4px;position:relative}
+#rad{width:100%;height:100%;object-fit:contain;transform:scale(4.4);transform-origin:12% 45%}
 .cam{width:100%;height:262px;object-fit:cover;background:#000;border-radius:4px}
 .foot{margin-top:8px;padding:7px;border-radius:6px;font-size:14px;font-weight:bold;text-align:center;background:#174928;border:1px solid #2ea043;color:#fff}
 .foot.alert{background:#5c191d;border-color:#f85149}
@@ -50,7 +50,7 @@ table{border-collapse:collapse;width:100%}
 <td id="c-KVIS"><div class="card"><div class="icao">KVIS</div><div class="city">Visalia</div><span class="badge UNK">WAIT</span></div></td>
 </tr></table>
 <table class="media"><tr>
-<td style="width:31%;padding-right:4px"><div class="mbox"><div class="mtitle">KHNX Radar (Visalia–Merced)</div><div class="rwrap"><img id="rad"></div></div></td>
+<td style="width:31%;padding-right:4px"><div class="mbox"><div class="mtitle">NEXRAD Radar (Visalia–Merced)</div><div class="rwrap"><img id="rad"></div></div></td>
 <td style="width:23%;padding:0 4px"><div class="mbox"><div class="mtitle">Owens Mtn (Valley)</div><img id="c1" class="cam"></div></td>
 <td style="width:23%;padding:0 4px"><div class="mbox"><div class="mtitle">Bear Mtn (SE Foothills)</div><img id="c2" class="cam"></div></td>
 <td style="width:23%;padding-left:4px"><div class="mbox"><div class="mtitle">Goat Mtn (North/Bass Lk)</div><img id="c3" class="cam"></div></td>
@@ -83,7 +83,7 @@ function runAstro(){
 function setImgs(){
   var t=Date.now();
   var p=String.fromCharCode(104,116,116,112,115,58,47,47);
-  document.getElementById("rad").src=p+"radar."+"weather."+"gov/ridge/standard/KHNX_loop.gif?t="+t;
+  document.getElementById("rad").src=p+"mesonet."+"agron."+"iastate."+"edu/data/nexrad_composites/uscomp/uscomp_n0q_0.png?t="+t;
   document.getElementById("c1").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-OwensMtn2/latest-frame.jpg?t="+t;
   document.getElementById("c2").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
   document.getElementById("c3").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
