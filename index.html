@@ -68,7 +68,7 @@ function runAstro(){
 }
 function setImgs(){
   var t=Date.now();
-  document.getElementById("rmap").src=P+"a."+"basemaps."+"cartocdn."+"com/dark_all/7/21/49.png";
+  document.getElementById("rmap").src=P+"server."+"arcgisonline."+"com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/7/49/21";
   document.getElementById("rad").src=P+"opengeo."+"ncep."+"noaa."+"gov/geoserver/conus/conus_bref_qcd/ows?service=WMS&version=1.1.1&request=GetMap&layers=conus_bref_qcd&styles=&bbox=-13462700,4383204,-13149614,4696291&width=512&height=512&srs=EPSG:3857&format=image/png&transparent=true&t="+t;
   document.getElementById("c1").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-OwensMtn2/latest-frame.jpg?t="+t;
   document.getElementById("c2").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
