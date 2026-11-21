@@ -45,13 +45,20 @@ table{border-collapse:collapse;width:100%}
 </tr></table>
 <table class="media"><tr>
 <td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Hanford (KHNX) Radar</div><img id="rad" src="https://weather.gov"></div></td>
-<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Delilah Lookout (Foothills)</div><img id="cm" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-DelilahLookout2/latest-frame.jpg"></div></td>
-<td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Deadwood Mtn (North Foothills)</div><img id="cv" src="https://alertcalifornia.org"></div></td>
+<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Delilah Lookout 2 (East/Sierra)</div><img id="cm" src="https://alertcalifornia.org"></div></td>
+<td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Delilah Lookout 1 (Valley View)</div><img id="cv" src="https://alertcalifornia.org"></div></td>
 </tr></table>
 <div class="foot" id="ft">LOADING WEATHER DATA...</div>
 <script>
-var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false,al={};
-var STS=[{id:"KFAT",n:"Fresno",t:1,la:36.78,lo:-119.72},{id:"KFCH",n:"Chandler"},{id:"KMAE",n:"Madera"},{id:"KMCE",n:"Merced",t:1,la:37.28,lo:-120.51},{id:"KHJO",n:"Hanford"},{id:"KVIS",n:"Visalia",t:1,la:36.32,lo:-119.39}];
+var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false;
+var STS=[
+  {id:"KFAT",n:"Fresno",t:1,la:36.776,lo:-119.718},
+  {id:"KFCH",n:"Chandler",t:0,la:36.732,lo:-119.820},
+  {id:"KMAE",n:"Madera",t:0,la:36.988,lo:-120.112},
+  {id:"KMCE",n:"Merced",t:1,la:37.285,lo:-120.514},
+  {id:"KHJO",n:"Hanford",t:0,la:36.316,lo:-119.628},
+  {id:"KVIS",n:"Visalia",t:1,la:36.319,lo:-119.393}
+];
 function p2(n){return(n<10?"0":"")+n}
 function astro(){
   var d=new Date();
@@ -66,34 +73,45 @@ function astro(){
   document.getElementById("mn").innerHTML=ph+" ("+Math.round((1-Math.cos(2*Math.PI*age/29.53059))/2*100)+"% Illum)";
 }
 function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR"}
-function uFoot(){
-  var b=[],k;for(k in al)if(al[k])b.push(k);
-  var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";
-  ft.className=b.length?"foot alert":"foot";
-  ft.innerHTML=b.length?"BELOW MINIMUMS ["+md+"]: "+b.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ["+md+"]";
+function wxTxt(w){return w===0?"Clear":w<=3?"Clouds":w>=45&&w<=48?"Fog":w>=51&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80?"Showers":"Fair"}
+function loadAll(){
+  var lats="36.776,36.732,36.988,37.285,36.316,36.319,37.104";
+  var lons="-119.718,-119.820,-120.112,-120.514,-119.628,-119.393,-119.317";
+  var url="https://open-meteo.com"+lats+"&longitude="+lons+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
+  var x=new XMLHttpRequest();
+  x.open("GET",url,true);
+  x.onreadystatechange=function(){
+    if(x.readyState==4&&x.status==200){
+      var arr=JSON.parse(x.responseText);
+      if(!arr||arr.length<7)return;
+      document.getElementById("tv").innerHTML=Math.round(arr.current.temperature_2m)+"°F";
+      document.getElementById("tm").innerHTML=Math.round(arr.current.temperature_2m)+"°F";
+      var bad=[];
+      for(var i=0;i<STS.length;i++){
+        var s=STS[i],d=arr[i],cur=d.current,hr=d.hourly;
+        var vis=Math.round((hr.visibility/1609.34)*10)/10;if(vis>10)vis=10;
+        var ceil=cur.cloud_cover_low>=60?1200:(cur.cloud_cover_low>=30?3500:99999);
+        var cat=catOf(ceil,vis);
+        var isBad=(ceil<(isNgt?MINS.ngtC:MINS.dayC)||vis<(isNgt?MINS.ngtV:MINS.dayV));
+        if(isBad)bad.push(s.id);
+        var wd=cur.wind_speed_10m<2?"Calm":("00"+Math.round(cur.wind_direction_10m)).slice(-3)+"° "+Math.round(cur.wind_speed_10m)+"kt"+(cur.wind_gusts_10m>cur.wind_speed_10m+5?" G"+Math.round(cur.wind_gusts_10m):"");
+        var th="";
+        if(s.t){
+          var v3=Math.min(10,hr.visibility/1609.34),c3=hr.cloud_cover_low>=60?1200:99999;
+          var v6=Math.min(10,hr.visibility/1609.34),c6=hr.cloud_cover_low>=60?1200:99999;
+          th='<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+catOf(c3,v3)+'">+3H</div></td><td><div class="pill '+catOf(c6,v6)+'">+6H</div></td></tr></table></div>';
+        }
+        document.getElementById("c-"+s.id).innerHTML='<div class="card '+(isBad?"alert":"")+'"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+vis+' SM</b></div><div class="m">Ceil: <b>'+(ceil>=99999?"CLR":ceil+" ft")+'</b></div><div class="m">Wx: <b>'+wxTxt(cur.weather_code)+'</b></div>'+th+'</div>';
+      }
+      var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";
+      ft.className=bad.length?"foot alert":"foot";
+      ft.innerHTML=bad.length?"BELOW MINIMUMS ["+md+"]: "+bad.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ["+md+"]";
+    }
+  };
+  x.send();
 }
-function draw(s,p){
-  var el=document.getElementById("c-"+s.id);
-  if(!p){el.innerHTML='<div class="card"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge UNK">LOADING</span></div>';return}
-  var c=99999;if(p.cloudLayers)for(var i=0;i<p.cloudLayers.length;i++){var L=p.cloudLayers[i];if((L.amount=="BKN"||L.amount=="OVC"||L.amount=="VV")&&L.base&&L.base.value!=null){var f=Math.round(L.base.value*3.28084);if(f<c)c=f}}
-  var v=(p.visibility&&p.visibility.value!=null)?Math.round(p.visibility.value/160.934)/10:10,cat=catOf(c,v);
-  al[s.id]=(c<(isNgt?MINS.ngtC:MINS.dayC)||v<(isNgt?MINS.ngtV:MINS.dayV));uFoot();
-  var ws=(p.windSpeed&&p.windSpeed.value!=null)?Math.round(p.windSpeed.value*0.539957):0,wg=(p.windGust&&p.windGust.value!=null)?Math.round(p.windGust.value*0.539957):0;
-  var wd=ws===0?"Calm":((p.windDirection&&p.windDirection.value!=null)?("00"+Math.round(p.windDirection.value)).slice(-3)+"° ":"VRB ")+ws+"kt"+(wg?" G"+wg:"");
-  if(s.id=="KFAT"&&p.temperature&&p.temperature.value!=null)document.getElementById("tv").innerHTML=Math.round(p.temperature.value*9/5+32)+"°F";
-  var th=s.t?'<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+cat+'" id="t3-'+s.id+'">+3H</div></td><td><div class="pill '+cat+'" id="t6-'+s.id+'">+6H</div></td></tr></table></div>':"";
-  el.innerHTML='<div class="card '+(al[s.id]?"alert":"")+'"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+v+' SM</b></div><div class="m">Ceil: <b>'+(c>=99999?"CLR":c+" ft")+'</b></div><div class="m">Wx: <b>'+(p.textDescription||"None").slice(0,14)+'</b></div>'+th+'</div>';
-  if(s.t)get("https://open-meteo.com"+s.la+"&longitude="+s.lo+"&hourly=visibility&forecast_hours=8",function(d){if(d&&d.hourly&&d.hourly.visibility){var v3=d.hourly.visibility/1609.34,v6=d.hourly.visibility/1609.34;document.getElementById("t3-"+s.id).className="pill "+(v3<1?"LIFR":v3<3?"IFR":v3<=5?"MVFR":"VFR");document.getElementById("t6-"+s.id).className="pill "+(v6<1?"LIFR":v6<3?"IFR":v6<=5?"MVFR":"VFR")}});
-}
-function get(u,cb){var x=new XMLHttpRequest();x.open("GET",u,true);x.onreadystatechange=function(){if(x.readyState==4&&x.status==200)try{cb(JSON.parse(x.responseText))}catch(e){}};x.send()}
-function loadWx(){for(var i=0;i<STS.length;i++)(function(s){get("https://weather.gov"+s.id+"/observations/latest",function(d){if(d&&d.properties)draw(s,d.properties)})})(STS[i])}
-function loadTemps(){
-  get("https://open-meteo.com36.78&longitude=-119.72&current=temperature_2m&temperature_unit=fahrenheit",function(d){if(d&&d.current&&document.getElementById("tv").innerHTML.indexOf("--")!=-1)document.getElementById("tv").innerHTML=Math.round(d.current.temperature_2m)+"°F"});
-  get("https://open-meteo.com37.10&longitude=-119.32&current=temperature_2m&temperature_unit=fahrenheit",function(d){if(d&&d.current)document.getElementById("tm").innerHTML=Math.round(d.current.temperature_2m)+"°F"});
-}
-function refImg(){var t=Date.now();document.getElementById("rad").src="https://weather.gov?t="+t;document.getElementById("cm").src="https://alertcalifornia.org"+t;document.getElementById("cv").src="https://alertcalifornia.org?t="+t}
-for(var i=0;i<STS.length;i++)draw(STS[i],null);
-astro();loadWx();loadTemps();setInterval(astro,30000);setInterval(loadWx,180000);setInterval(loadTemps,600000);setInterval(refImg,120000);
+function refImg(){var t=Date.now();document.getElementById("rad").src="https://weather.gov?t="+t;document.getElementById("cm").src="https://alertcalifornia.org?t="+t;document.getElementById("cv").src="https://alertcalifornia.org?t="+t}
+astro();loadAll();setInterval(astro,30000);setInterval(loadAll,180000);setInterval(refImg,120000);
 </script>
 </body>
 </html>
