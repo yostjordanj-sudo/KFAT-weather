@@ -27,9 +27,9 @@ table{border-collapse:collapse;width:100%}
 .media{margin-top:8px}
 .mbox{background:#161f2c;border:1px solid #2b394a;border-radius:6px;padding:6px;height:295px}
 .mtitle{font-size:11px;font-weight:bold;color:#9ecbff;margin-bottom:5px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
-.rwrap{width:100%;height:262px;overflow:hidden;background:#0b131e;border-radius:4px;position:relative}
+.rwrap{width:100%;height:262px;overflow:hidden;background:#111822;border-radius:4px;position:relative}
 .rwrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
-#rad{opacity:.82}
+#rad{opacity:.85}
 .cam{width:100%;height:262px;object-fit:cover;background:#000;border-radius:4px}
 .foot{margin-top:8px;padding:7px;border-radius:6px;font-size:14px;font-weight:bold;text-align:center;background:#174928;border:1px solid #2ea043;color:#fff}
 .foot.alert{background:#5c191d;border-color:#f85149}
@@ -47,7 +47,7 @@ table{border-collapse:collapse;width:100%}
 <td id="c-KVIS"><div class="card"><div class="icao">KVIS</div><div class="city">Visalia</div><span class="badge UNK">WAIT</span></div></td>
 </tr></table>
 <table class="media"><tr>
-<td style="width:31%;padding-right:4px"><div class="mbox"><div class="mtitle">Radar (Visalia–Merced)</div><div class="rwrap"><img id="rmap"><img id="rad"></div></div></td>
+<td style="width:31%;padding-right:4px"><div class="mbox"><div class="mtitle">MRMS Precip Radar (Visalia–Merced)</div><div class="rwrap"><img id="rmap"><img id="rad"><img id="rref"></div></div></td>
 <td style="width:23%;padding:0 4px"><div class="mbox"><div class="mtitle">Owens Mtn (Valley)</div><img id="c1" class="cam"></div></td>
 <td style="width:23%;padding:0 4px"><div class="mbox"><div class="mtitle">Bear Mtn (SE Foothills)</div><img id="c2" class="cam"></div></td>
 <td style="width:23%;padding-left:4px"><div class="mbox"><div class="mtitle">Goat Mtn (North/Bass Lk)</div><img id="c3" class="cam"></div></td>
@@ -67,9 +67,10 @@ function runAstro(){
   var mt=noon+(age/29.53059)*24;document.getElementById("mr").innerHTML=fh(mt-6.2);document.getElementById("ms").innerHTML=fh(mt+6.2);
 }
 function setImgs(){
-  var t=Date.now();
-  document.getElementById("rmap").src=P+"server."+"arcgisonline."+"com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/7/49/21";
-  document.getElementById("rad").src=P+"opengeo."+"ncep."+"noaa."+"gov/geoserver/conus/conus_bref_qcd/ows?service=WMS&version=1.1.1&request=GetMap&layers=conus_bref_qcd&styles=&bbox=-13462700,4383204,-13149614,4696291&width=512&height=512&srs=EPSG:3857&format=image/png&transparent=true&t="+t;
+  var t=Date.now(),arc=P+"server."+"arcgisonline."+"com/ArcGIS/rest/services/Canvas/";
+  document.getElementById("rmap").src=arc+"World_Dark_Gray_Base/MapServer/tile/7/49/21";
+  document.getElementById("rref").src=arc+"World_Dark_Gray_Reference/MapServer/tile/7/49/21";
+  document.getElementById("rad").src=P+"opengeo."+"ncep."+"noaa."+"gov/geoserver/mrms/mrms/ows?service=WMS&version=1.1.1&request=GetMap&layers=mrms:RadarOnly_QPE_01H&styles=&bbox=-13462700,4383204,-13149614,4696291&width=512&height=512&srs=EPSG:3857&format=image/png&transparent=true&t="+t;
   document.getElementById("c1").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-OwensMtn2/latest-frame.jpg?t="+t;
   document.getElementById("c2").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
   document.getElementById("c3").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
