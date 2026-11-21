@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="refresh" content="600">
-<title>KFAT Regional Aviation Weather</title>
+<title>SkyLife Fresno Weather</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0d131a;color:#e6edf3;font-family:Arial,sans-serif;padding:10px 14px;overflow:hidden}
@@ -34,7 +34,7 @@ table{border-collapse:collapse;width:100%}
 </style>
 </head>
 <body>
-<table class="bar"><tr><td class="title">KFAT REGIONAL AVIATION WEATHER</td><td class="clock" id="clk">--:-- Z</td></tr></table>
+<table class="bar"><tr><td class="title">SKYLIFE FRESNO WEATHER</td><td class="clock" id="clk">--:-- Z</td></tr></table>
 <table class="sub"><tr>
 <td>SUN RISE: <b id="sr">--:--</b> | SET: <b id="ss">--:--</b></td>
 <td style="text-align:center">MOON: <b id="mn">--</b> | RISE: <b id="mr">--:--</b> | SET: <b id="ms">--:--</b></td>
@@ -49,7 +49,7 @@ table{border-collapse:collapse;width:100%}
 <td id="c-KVIS"><div class="card"><div class="icao">KVIS</div><div class="city">Visalia</div><span class="badge UNK">WAIT</span></div></td>
 </tr></table>
 <table class="media"><tr>
-<td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Hanford (KHNX) Radar</div><img id="rad"></div></td>
+<td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Southwest Radar (Precip Filtered)</div><img id="rad"></div></td>
 <td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Bear Mountain (SE Foothills)</div><img id="cm"></div></td>
 <td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Goat Mtn Lookout (Bass Lake / N)</div><img id="cv"></div></td>
 </tr></table>
@@ -81,7 +81,7 @@ function runAstro(){
 function setImgs(){
   var t=Date.now();
   var p=String.fromCharCode(104,116,116,112,115,58,47,47);
-  document.getElementById("rad").src=p+"radar.weather.gov/ridge/standard/KHNX_loop.gif?t="+t;
+  document.getElementById("rad").src=p+"radar.weather.gov/ridge/standard/SOUTHWEST_loop.gif?t="+t;
   document.getElementById("cm").src=p+"cameras.alertcalifornia.org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
   document.getElementById("cv").src=p+"cameras.alertcalifornia.org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
 }
