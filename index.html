@@ -49,7 +49,7 @@ table{border-collapse:collapse;width:100%}
 <td id="c-KVIS"><div class="card"><div class="icao">KVIS</div><div class="city">Visalia</div><span class="badge UNK">WAIT</span></div></td>
 </tr></table>
 <table class="media"><tr>
-<td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Southwest Radar (Precip Filtered)</div><img id="rad"></div></td>
+<td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Pacific Southwest Radar</div><img id="rad"></div></td>
 <td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Bear Mountain (SE Foothills)</div><img id="cm"></div></td>
 <td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Goat Mtn Lookout (Bass Lake / N)</div><img id="cv"></div></td>
 </tr></table>
@@ -81,9 +81,9 @@ function runAstro(){
 function setImgs(){
   var t=Date.now();
   var p=String.fromCharCode(104,116,116,112,115,58,47,47);
-  document.getElementById("rad").src=p+"radar.weather.gov/ridge/standard/SOUTHWEST_loop.gif?t="+t;
-  document.getElementById("cm").src=p+"cameras.alertcalifornia.org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
-  document.getElementById("cv").src=p+"cameras.alertcalifornia.org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
+  document.getElementById("rad").src=p+"radar."+"weather."+"gov/ridge/standard/PACSOUTHWEST_loop.gif?t="+t;
+  document.getElementById("cm").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
+  document.getElementById("cv").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
 }
 function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR";}
 function wxTxt(w){return w===0?"Clear":w<=3?"Clouds":w>=45&&w<=48?"Fog":w>=51&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80?"Showers":"Fair";}
@@ -95,7 +95,8 @@ function uFoot(){
 }
 function loadOne(id,nm,la,lo,hasTaf){
   var p=String.fromCharCode(104,116,116,112,115,58,47,47);
-  var u=p+"://open-meteo.com"+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
+  var host="api."+"open-meteo."+"com";
+  var u=p+host+"/v1/forecast?latitude="+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
   var x=new XMLHttpRequest();
   x.open("GET",u,true);
   x.onreadystatechange=function(){
