@@ -29,7 +29,7 @@ table{border-collapse:collapse;width:100%}
 .mtitle{font-size:11px;font-weight:bold;color:#9ecbff;margin-bottom:5px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
 .rwrap{width:100%;height:262px;overflow:hidden;background:#111822;border-radius:4px;position:relative}
 .rwrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
-#rad{opacity:.85}
+#rad{opacity:.78}
 .cam{width:100%;height:262px;object-fit:cover;background:#000;border-radius:4px}
 .foot{margin-top:8px;padding:7px;border-radius:6px;font-size:14px;font-weight:bold;text-align:center;background:#174928;border:1px solid #2ea043;color:#fff}
 .foot.alert{background:#5c191d;border-color:#f85149}
@@ -47,7 +47,7 @@ table{border-collapse:collapse;width:100%}
 <td id="c-KVIS"><div class="card"><div class="icao">KVIS</div><div class="city">Visalia</div><span class="badge UNK">WAIT</span></div></td>
 </tr></table>
 <table class="media"><tr>
-<td style="width:31%;padding-right:4px"><div class="mbox"><div class="mtitle">MRMS Precip Radar (Visalia–Merced)</div><div class="rwrap"><img id="rmap"><img id="rad"><img id="rref"></div></div></td>
+<td style="width:31%;padding-right:4px"><div class="mbox"><div class="mtitle">Radar (Visalia–Merced)</div><div class="rwrap"><img id="rmap"><img id="rad"><img id="rref"></div></div></td>
 <td style="width:23%;padding:0 4px"><div class="mbox"><div class="mtitle">Owens Mtn (Valley)</div><img id="c1" class="cam"></div></td>
 <td style="width:23%;padding:0 4px"><div class="mbox"><div class="mtitle">Bear Mtn (SE Foothills)</div><img id="c2" class="cam"></div></td>
 <td style="width:23%;padding-left:4px"><div class="mbox"><div class="mtitle">Goat Mtn (North/Bass Lk)</div><img id="c3" class="cam"></div></td>
@@ -70,22 +70,26 @@ function setImgs(){
   var t=Date.now(),arc=P+"server."+"arcgisonline."+"com/ArcGIS/rest/services/Canvas/";
   document.getElementById("rmap").src=arc+"World_Dark_Gray_Base/MapServer/tile/7/49/21";
   document.getElementById("rref").src=arc+"World_Dark_Gray_Reference/MapServer/tile/7/49/21";
-  document.getElementById("rad").src=P+"opengeo."+"ncep."+"noaa."+"gov/geoserver/mrms/mrms/ows?service=WMS&version=1.1.1&request=GetMap&layers=mrms:RadarOnly_QPE_01H&styles=&bbox=-13462700,4383204,-13149614,4696291&width=512&height=512&srs=EPSG:3857&format=image/png&transparent=true&t="+t;
+  var rImg=document.getElementById("rad");
+  rImg.onerror=function(){this.style.display="none";};
+  rImg.onload=function(){this.style.display="block";};
+  rImg.src=P+"opengeo."+"ncep."+"noaa."+"gov/geoserver/conus/conus_bref_qcd/ows?service=WMS&version=1.1.1&request=GetMap&layers=conus_bref_qcd&styles=&bbox=-13462700,4383204,-13149614,4696291&width=512&height=512&srs=EPSG:3857&format=image/png&transparent=true&t="+t;
   document.getElementById("c1").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-OwensMtn2/latest-frame.jpg?t="+t;
   document.getElementById("c2").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
   document.getElementById("c3").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
 }
 function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR"}
-function wxTxt(w){return w===0?"Clear":w<=3?"Clouds":w>=45&&w<=48?"Fog":w>=51&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80?"Showers":"Fair"}
+function wxTxt(w){return w>=45&&w<=48?"Fog / BR":w>=51&&w<=57?"Drizzle":w>=61&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80&&w<=82?"Showers":w>=95?"T-Storm":"None"}
 function uFoot(){var bad=[],k;for(k in al)if(al[k])bad.push(k);var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";ft.className=bad.length?"foot alert":"foot";ft.innerHTML=bad.length?"BELOW MINIMUMS: "+bad.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ("+md+")"}
 function loadOne(id,nm,la,lo,ht){
-  var u=P+"api."+"open-meteo."+"com/v1/forecast?latitude="+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
+  var u=P+"api."+"open-meteo."+"com/v1/forecast?latitude="+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,cloud_cover_mid,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
   var x=new XMLHttpRequest();x.open("GET",u,true);
   x.onreadystatechange=function(){if(x.readyState===4&&x.status===200){
     var d=JSON.parse(x.responseText),cur=d.current,hr=d.hourly;
     if(id==="KFAT")document.getElementById("tv").innerHTML=Math.round(cur.temperature_2m)+"°F";
     if(id==="SHVR"){document.getElementById("tm").innerHTML=Math.round(cur.temperature_2m)+"°F";return}
-    var v0=hr.visibility.shift(),vis=Math.min(10,Math.round((v0/1609.34)*10)/10),ceil=cur.cloud_cover_low>=60?1200:(cur.cloud_cover_low>=30?3500:99999),cat=catOf(ceil,vis);
+    var v0=hr.visibility.shift(),vis=Math.min(10,Math.round((v0/1609.34)*10)/10);
+    var ceil=cur.cloud_cover_low>=60?1200:(cur.cloud_cover_low>=30?3500:(cur.cloud_cover_mid>=60?12000:99999)),cat=catOf(ceil,vis);
     al[id]=(ceil<(isNgt?MINS.ngtC:MINS.dayC)||vis<(isNgt?MINS.ngtV:MINS.dayV));uFoot();
     var wd=cur.wind_speed_10m<2?"Calm":("00"+Math.round(cur.wind_direction_10m)).slice(-3)+"° "+Math.round(cur.wind_speed_10m)+"kt"+(cur.wind_gusts_10m>cur.wind_speed_10m+5?" G"+Math.round(cur.wind_gusts_10m):"");
     var th=ht?'<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+catOf((hr.cloud_cover_low.slice(3,4).pop()||0)>=60?1200:99999,Math.min(10,(hr.visibility.slice(2,3).pop()||v0)/1609.34))+'">+3H</div></td><td><div class="pill '+catOf((hr.cloud_cover_low.slice(6,7).pop()||0)>=60?1200:99999,Math.min(10,(hr.visibility.slice(5,6).pop()||v0)/1609.34))+'">+6H</div></td></tr></table></div>':"";
