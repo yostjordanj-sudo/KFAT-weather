@@ -83,12 +83,12 @@ setInterval(runAstro,30000);
 
 <script>
 var STS=[
-  {id:"KFAT",n:"Fresno",t:1,la:36.776,lo:-119.718},
-  {id:"KFCH",n:"Chandler",t:0,la:36.732,lo:-119.820},
-  {id:"KMAE",n:"Madera",t:0,la:36.988,lo:-120.112},
-  {id:"KMCE",n:"Merced",t:1,la:37.285,lo:-120.514},
-  {id:"KHJO",n:"Hanford",t:0,la:36.316,lo:-119.628},
-  {id:"KVIS",n:"Visalia",t:1,la:36.319,lo:-119.393}
+  {id:"KFAT",n:"Fresno",t:1},
+  {id:"KFCH",n:"Chandler",t:0},
+  {id:"KMAE",n:"Madera",t:0},
+  {id:"KMCE",n:"Merced",t:1},
+  {id:"KHJO",n:"Hanford",t:0},
+  {id:"KVIS",n:"Visalia",t:1}
 ];
 function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR";}
 function wxTxt(w){return w===0?"Clear":w<=3?"Clouds":w>=45&&w<=48?"Fog":w>=51&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80?"Showers":"Fair";}
@@ -103,12 +103,12 @@ function runWx(){
       if(x.readyState===4){
         if(x.status===200){
           var arr=JSON.parse(x.responseText);
-          document.getElementById("tv").innerHTML=Math.round(arr.current.temperature_2m)+"°F";
-          document.getElementById("tm").innerHTML=Math.round(arr.current.temperature_2m)+"°F";
+          document.getElementById("tv").innerHTML=Math.round(arr[0].current.temperature_2m)+"°F";
+          document.getElementById("tm").innerHTML=Math.round(arr[6].current.temperature_2m)+"°F";
           var bad=[];
           for(var i=0;i<STS.length;i++){
             var s=STS[i],d=arr[i],cur=d.current,hr=d.hourly;
-            var vis=Math.round((hr.visibility/1609.34)*10)/10;if(vis>10)vis=10;
+            var vis=Math.round((hr.visibility[0]/1609.34)*10)/10;if(vis>10)vis=10;
             var ceil=cur.cloud_cover_low>=60?1200:(cur.cloud_cover_low>=30?3500:99999);
             var cat=catOf(ceil,vis);
             var isBad=(ceil<(isNgt?MINS.ngtC:MINS.dayC)||vis<(isNgt?MINS.ngtV:MINS.dayV));
@@ -116,8 +116,8 @@ function runWx(){
             var wd=cur.wind_speed_10m<2?"Calm":("00"+Math.round(cur.wind_direction_10m)).slice(-3)+"° "+Math.round(cur.wind_speed_10m)+"kt"+(cur.wind_gusts_10m>cur.wind_speed_10m+5?" G"+Math.round(cur.wind_gusts_10m):"");
             var th="";
             if(s.t){
-              var v3=Math.min(10,hr.visibility/1609.34),c3=hr.cloud_cover_low>=60?1200:99999;
-              var v6=Math.min(10,hr.visibility/1609.34),c6=hr.cloud_cover_low>=60?1200:99999;
+              var v3=Math.min(10,hr.visibility[3]/1609.34),c3=hr.cloud_cover_low[3]>=60?1200:99999;
+              var v6=Math.min(10,hr.visibility[6]/1609.34),c6=hr.cloud_cover_low[6]>=60?1200:99999;
               th='<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+catOf(c3,v3)+'">+3H</div></td><td><div class="pill '+catOf(c6,v6)+'">+6H</div></td></tr></table></div>';
             }
             document.getElementById("c-"+s.id).innerHTML='<div class="card '+(isBad?"alert":"")+'"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+vis+' SM</b></div><div class="m">Ceil: <b>'+(ceil>=99999?"CLR":ceil+" ft")+'</b></div><div class="m">Wx: <b>'+wxTxt(cur.weather_code)+'</b></div>'+th+'</div>';
