@@ -57,6 +57,7 @@ table{border-collapse:collapse;width:100%}
 
 <script>
 var P=location.protocol+"//";
+var API=P+"api."+"open-meteo."+"com/v1/forecast";
 var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false,al={};
 function p2(n){return(n<10?"0":"")+n;}
 function runAstro(){
@@ -78,9 +79,9 @@ function runAstro(){
 }
 function setImgs(){
   var t=Date.now();
-  document.getElementById("rad").src=P+"radar.weather.gov/ridge/standard/KHNX_loop.gif?t="+t;
-  document.getElementById("cm").src=P+"cameras.alertcalifornia.org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
-  document.getElementById("cv").src=P+"cameras.alertcalifornia.org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
+  document.getElementById("rad").src=P+"radar."+"weather."+"gov/ridge/standard/KHNX_loop.gif?t="+t;
+  document.getElementById("cm").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
+  document.getElementById("cv").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
 }
 function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR";}
 function wxTxt(w){return w===0?"Clear":w<=3?"Clouds":w>=45&&w<=48?"Fog":w>=51&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80?"Showers":"Fair";}
@@ -91,7 +92,7 @@ function uFoot(){
   ft.innerHTML=bad.length?"BELOW MINIMUMS: "+bad.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ("+md+")";
 }
 function loadOne(id,nm,la,lo,hasTaf){
-  var u=P+"://open-meteo.com"+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
+  var u=API+"?latitude="+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
   fetch(u).then(function(r){return r.json();}).then(function(d){
     var cur=d.current,hr=d.hourly;
     if(id==="KFAT")document.getElementById("tv").innerHTML=Math.round(cur.temperature_2m)+"°F";
