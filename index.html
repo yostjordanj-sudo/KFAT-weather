@@ -5,42 +5,12 @@
 <meta http-equiv="refresh" content="600">
 <title>SkyLife Fresno Weather</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0d131a;color:#e6edf3;font-family:Arial,sans-serif;padding:10px 14px;overflow:hidden}
-table{border-collapse:collapse;width:100%}
-.bar{background:#161f2c;border:1px solid #2b394a;border-radius:6px;padding:7px 12px;margin-bottom:8px}
-.title{font-size:19px;font-weight:bold;color:#fff}
-.clock{font-size:17px;font-weight:bold;color:#79c0ff;text-align:right}
-.sub{background:#131b26;border:1px solid #263342;border-radius:6px;padding:5px 12px;margin-bottom:8px;font-size:12px;color:#c9d1d9}
-.sub b{color:#fff}
-.grid td{width:16.66%;vertical-align:top;padding:0 4px}
-.card{background:#161f2c;border:2px solid #2b394a;border-radius:6px;padding:8px;height:215px;position:relative}
-.card.alert{border-color:#f85149;background:#261418}
-.icao{font-size:20px;font-weight:bold;color:#fff}
-.city{font-size:11px;color:#8b949e;text-transform:uppercase;margin-bottom:5px}
-.badge{display:block;text-align:center;font-size:15px;font-weight:bold;padding:3px 0;border-radius:4px;margin-bottom:6px;color:#fff}
-.VFR{background:#1f7a38}.MVFR{background:#1b65b8}.IFR{background:#c92a2a}.LIFR{background:#a61e8b}.UNK{background:#3b4654}
-.m{font-size:12px;margin-bottom:3px;color:#c9d1d9}.m b{color:#fff}
-.taf{position:absolute;bottom:8px;left:8px;right:8px}
-.taf td{width:33.3%;padding:0 1px}
-.pill{text-align:center;font-size:10px;font-weight:bold;padding:3px 0;border-radius:3px;color:#fff}
-.media{margin-top:8px}
-.mbox{background:#161f2c;border:1px solid #2b394a;border-radius:6px;padding:6px;height:295px}
-.mtitle{font-size:11px;font-weight:bold;color:#9ecbff;margin-bottom:5px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
-.rwrap{width:100%;height:262px;overflow:hidden;background:#0a1118;border-radius:4px;position:relative}
-#rad{width:100%;height:100%;object-fit:contain;transform:scale(1.85);transform-origin:48% 46%}
-.cam{width:100%;height:262px;object-fit:cover;background:#000;border-radius:4px}
-.foot{margin-top:8px;padding:7px;border-radius:6px;font-size:14px;font-weight:bold;text-align:center;background:#174928;border:1px solid #2ea043;color:#fff}
-.foot.alert{background:#5c191d;border-color:#f85149}
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0d131a;color:#e6edf3;font-family:Arial,sans-serif;padding:10px 14px;overflow:hidden}table{border-collapse:collapse;width:100%}.bar{background:#161f2c;border:1px solid #2b394a;border-radius:6px;padding:7px 12px;margin-bottom:8px}.title{font-size:19px;font-weight:bold;color:#fff}.clock{font-size:17px;font-weight:bold;color:#79c0ff;text-align:right}.sub{background:#131b26;border:1px solid #263342;border-radius:6px;padding:5px 12px;margin-bottom:8px;font-size:12px;color:#c9d1d9}.sub b{color:#fff}.grid td{width:16.66%;vertical-align:top;padding:0 4px}.card{background:#161f2c;border:2px solid #2b394a;border-radius:6px;padding:8px;height:215px;position:relative}.card.alert{border-color:#f85149;background:#261418}.icao{font-size:20px;font-weight:bold;color:#fff}.city{font-size:11px;color:#8b949e;text-transform:uppercase;margin-bottom:5px}.badge{display:block;text-align:center;font-size:15px;font-weight:bold;padding:3px 0;border-radius:4px;margin-bottom:6px;color:#fff}.VFR{background:#1f7a38}.MVFR{background:#1b65b8}.IFR{background:#c92a2a}.LIFR{background:#a61e8b}.UNK{background:#3b4654}.m{font-size:12px;margin-bottom:3px;color:#c9d1d9}.m b{color:#fff}.taf{position:absolute;bottom:8px;left:8px;right:8px}.taf td{width:33.3%;padding:0 1px}.pill{text-align:center;font-size:10px;font-weight:bold;padding:3px 0;border-radius:3px;color:#fff}.media{margin-top:8px}.mbox{background:#161f2c;border:1px solid #2b394a;border-radius:6px;padding:6px;height:295px}.mtitle{font-size:11px;font-weight:bold;color:#9ecbff;margin-bottom:5px;text-transform:uppercase;white-space:nowrap;overflow:hidden}.rwrap{width:100%;height:262px;overflow:hidden;background:#0b131e;border-radius:4px;position:relative}.rwrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}#rad{opacity:.85}.cam{width:100%;height:262px;object-fit:cover;background:#000;border-radius:4px}.foot{margin-top:8px;padding:7px;border-radius:6px;font-size:14px;font-weight:bold;text-align:center;background:#174928;border:1px solid #2ea043;color:#fff}.foot.alert{background:#5c191d;border-color:#f85149}
 </style>
 </head>
 <body>
 <table class="bar"><tr><td class="title">SKYLIFE FRESNO WEATHER</td><td class="clock" id="clk">--:-- Z</td></tr></table>
-<table class="sub"><tr>
-<td>SUN RISE: <b id="sr">--:--</b> | SET: <b id="ss">--:--</b></td>
-<td style="text-align:center">MOON: <b id="mn">--</b> | RISE: <b id="mr">--:--</b> | SET: <b id="ms">--:--</b></td>
-<td style="text-align:right">FRESNO: <b id="tv">--°F</b> | SHAVER: <b id="tm">--°F</b></td>
-</tr></table>
+<table class="sub"><tr><td>SUN RISE: <b id="sr">--:--</b> | SET: <b id="ss">--:--</b></td><td style="text-align:center">MOON: <b id="mn">--</b> | RISE: <b id="mr">--:--</b> | SET: <b id="ms">--:--</b></td><td style="text-align:right">FRESNO: <b id="tv">--°F</b> | SHAVER: <b id="tm">--°F</b></td></tr></table>
 <table class="grid"><tr>
 <td id="c-KFAT"><div class="card"><div class="icao">KFAT</div><div class="city">Fresno</div><span class="badge UNK">WAIT</span></div></td>
 <td id="c-KFCH"><div class="card"><div class="icao">KFCH</div><div class="city">Chandler</div><span class="badge UNK">WAIT</span></div></td>
@@ -50,98 +20,53 @@ table{border-collapse:collapse;width:100%}
 <td id="c-KVIS"><div class="card"><div class="icao">KVIS</div><div class="city">Visalia</div><span class="badge UNK">WAIT</span></div></td>
 </tr></table>
 <table class="media"><tr>
-<td style="width:31%;padding-right:4px"><div class="mbox"><div class="mtitle">KHNX Radar (Visalia–Merced)</div><div class="rwrap"><img id="rad"></div></div></td>
+<td style="width:31%;padding-right:4px"><div class="mbox"><div class="mtitle">Radar (Visalia–Merced)</div><div class="rwrap"><img id="rmap"><img id="rad"></div></div></td>
 <td style="width:23%;padding:0 4px"><div class="mbox"><div class="mtitle">Owens Mtn (Valley)</div><img id="c1" class="cam"></div></td>
 <td style="width:23%;padding:0 4px"><div class="mbox"><div class="mtitle">Bear Mtn (SE Foothills)</div><img id="c2" class="cam"></div></td>
 <td style="width:23%;padding-left:4px"><div class="mbox"><div class="mtitle">Goat Mtn (North/Bass Lk)</div><img id="c3" class="cam"></div></td>
 </tr></table>
 <div class="foot" id="ft">LOADING AIRPORTS...</div>
-
 <script>
-var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false,al={};
-function p2(n){return(n<10?"0":"")+n;}
-function fh(x){x=((x%24)+24)%24;var h=Math.floor(x);return p2(h)+":"+p2(Math.floor((x-h)*60));}
+var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false,al={},P=String.fromCharCode(104,116,116,112,115,58,47,47);
+function p2(n){return(n<10?"0":"")+n}
+function fh(x){x=((x%24)+24)%24;var h=Math.floor(x);return p2(h)+":"+p2(Math.floor((x-h)*60))}
 function runAstro(){
-  var d=new Date();
-  document.getElementById("clk").innerHTML=p2(d.getUTCHours())+":"+p2(d.getUTCMinutes())+" Z | "+p2(d.getHours())+":"+p2(d.getMinutes())+" LOCAL";
-  var doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
-  var dec=23.45*Math.sin((2*Math.PI/365)*(doy-81))*Math.PI/180;
-  var ha=Math.acos(-Math.tan(36.78*Math.PI/180)*Math.tan(dec))*180/Math.PI;
-  var noon=12-(-119.72/15)+(-d.getTimezoneOffset()/60);
-  var r=noon-ha/15,s=noon+ha/15;
-  document.getElementById("sr").innerHTML=fh(r);
-  document.getElementById("ss").innerHTML=fh(s);
-  isNgt=(d.getHours()+d.getMinutes()/60<r||d.getHours()+d.getMinutes()/60>s);
-  var age=((d.getTime()-Date.UTC(2000,0,6,18,14))/864e5)%29.53059;
-  if(age<0)age+=29.53059;
+  var d=new Date();document.getElementById("clk").innerHTML=p2(d.getUTCHours())+":"+p2(d.getUTCMinutes())+" Z | "+p2(d.getHours())+":"+p2(d.getMinutes())+" LOCAL";
+  var doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5),dec=23.45*Math.sin((2*Math.PI/365)*(doy-81))*Math.PI/180,ha=Math.acos(-Math.tan(36.78*Math.PI/180)*Math.tan(dec))*180/Math.PI,noon=12-(-119.72/15)+(-d.getTimezoneOffset()/60),r=noon-ha/15,s=noon+ha/15;
+  document.getElementById("sr").innerHTML=fh(r);document.getElementById("ss").innerHTML=fh(s);isNgt=(d.getHours()+d.getMinutes()/60<r||d.getHours()+d.getMinutes()/60>s);
+  var age=((d.getTime()-Date.UTC(2000,0,6,18,14))/864e5)%29.53059;if(age<0)age+=29.53059;
   var ph=age<1.8?"New":age<5.5?"Wax Cres":age<9.2?"1st Qtr":age<12.9?"Wax Gib":age<16.6?"Full":age<20.3?"Wan Gib":age<24?"Last Qtr":"Wan Cres";
   document.getElementById("mn").innerHTML=ph+" ("+Math.round((1-Math.cos(2*Math.PI*age/29.53059))/2*100)+"%)";
-  var mTransit=noon+(age/29.53059)*24;
-  document.getElementById("mr").innerHTML=fh(mTransit-6.2);
-  document.getElementById("ms").innerHTML=fh(mTransit+6.2);
+  var mt=noon+(age/29.53059)*24;document.getElementById("mr").innerHTML=fh(mt-6.2);document.getElementById("ms").innerHTML=fh(mt+6.2);
 }
 function setImgs(){
   var t=Date.now();
-  var p=String.fromCharCode(104,116,116,112,115,58,47,47);
-  var rImg=document.getElementById("rad");
-  rImg.onerror=function(){this.onerror=null;this.src=p+"radar."+"weather."+"gov/ridge/standard/KHNX_loop.gif?t="+t;};
-  rImg.src=p+"radar."+"weather."+"gov/ridge/standard/KHNX_0.gif?t="+t;
-  document.getElementById("c1").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-OwensMtn2/latest-frame.jpg?t="+t;
-  document.getElementById("c2").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
-  document.getElementById("c3").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
+  document.getElementById("rmap").src=P+"://cartocdn.com";
+  var rx=new XMLHttpRequest();rx.open("GET",P+"://rainviewer.com",true);
+  rx.onreadystatechange=function(){if(rx.readyState===4&&rx.status===200){var j=JSON.parse(rx.responseText);if(j&&j.radar&&j.radar.past&&j.radar.past.length)document.getElementById("rad").src=P+"://rainviewer.com"+j.radar.past.pop().path+"/512/7/21/49/2/1_1.png"}};rx.send();
+  document.getElementById("c1").src=P+"cameras.alertcalifornia.org/public-camera-data/Axis-OwensMtn2/latest-frame.jpg?t="+t;
+  document.getElementById("c2").src=P+"cameras.alertcalifornia.org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
+  document.getElementById("c3").src=P+"cameras.alertcalifornia.org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
 }
-function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR";}
-function wxTxt(w){return w===0?"Clear":w<=3?"Clouds":w>=45&&w<=48?"Fog":w>=51&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80?"Showers":"Fair";}
-function uFoot(){
-  var bad=[],k;for(k in al)if(al[k])bad.push(k);
-  var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";
-  ft.className=bad.length?"foot alert":"foot";
-  ft.innerHTML=bad.length?"BELOW MINIMUMS: "+bad.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ("+md+")";
+function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR"}
+function wxTxt(w){return w===0?"Clear":w<=3?"Clouds":w>=45&&w<=48?"Fog":w>=51&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80?"Showers":"Fair"}
+function uFoot(){var bad=[],k;for(k in al)if(al[k])bad.push(k);var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";ft.className=bad.length?"foot alert":"foot";ft.innerHTML=bad.length?"BELOW MINIMUMS: "+bad.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ("+md+")"}
+function loadOne(id,nm,la,lo,ht){
+  var u=P+"api."+"open-meteo."+"com/v1/forecast?latitude="+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
+  var x=new XMLHttpRequest();x.open("GET",u,true);
+  x.onreadystatechange=function(){if(x.readyState===4&&x.status===200){
+    var d=JSON.parse(x.responseText),cur=d.current,hr=d.hourly;
+    if(id==="KFAT")document.getElementById("tv").innerHTML=Math.round(cur.temperature_2m)+"°F";
+    if(id==="SHVR"){document.getElementById("tm").innerHTML=Math.round(cur.temperature_2m)+"°F";return}
+    var v0=hr.visibility.shift(),vis=Math.min(10,Math.round((v0/1609.34)*10)/10),ceil=cur.cloud_cover_low>=60?1200:(cur.cloud_cover_low>=30?3500:99999),cat=catOf(ceil,vis);
+    al[id]=(ceil<(isNgt?MINS.ngtC:MINS.dayC)||vis<(isNgt?MINS.ngtV:MINS.dayV));uFoot();
+    var wd=cur.wind_speed_10m<2?"Calm":("00"+Math.round(cur.wind_direction_10m)).slice(-3)+"° "+Math.round(cur.wind_speed_10m)+"kt"+(cur.wind_gusts_10m>cur.wind_speed_10m+5?" G"+Math.round(cur.wind_gusts_10m):"");
+    var th=ht?'<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+catOf((hr.cloud_cover_low.slice(3,4).pop()||0)>=60?1200:99999,Math.min(10,(hr.visibility.slice(2,3).pop()||v0)/1609.34))+'">+3H</div></td><td><div class="pill '+catOf((hr.cloud_cover_low.slice(6,7).pop()||0)>=60?1200:99999,Math.min(10,(hr.visibility.slice(5,6).pop()||v0)/1609.34))+'">+6H</div></td></tr></table></div>':"";
+    document.getElementById("c-"+id).innerHTML='<div class="card '+(al[id]?"alert":"")+'"><div class="icao">'+id+'</div><div class="city">'+nm+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+vis+' SM</b></div><div class="m">Ceil: <b>'+(ceil>=99999?"CLR":ceil+" ft")+'</b></div><div class="m">Wx: <b>'+wxTxt(cur.weather_code)+'</b></div>'+th+'</div>';
+  }};x.send();
 }
-function loadOne(id,nm,la,lo,hasTaf){
-  var p=String.fromCharCode(104,116,116,112,115,58,47,47);
-  var host="api."+"open-meteo."+"com";
-  var u=p+host+"/v1/forecast?latitude="+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
-  var x=new XMLHttpRequest();
-  x.open("GET",u,true);
-  x.onreadystatechange=function(){
-    if(x.readyState===4){
-      if(x.status===200){
-        var d=JSON.parse(x.responseText),cur=d.current,hr=d.hourly;
-        if(id==="KFAT")document.getElementById("tv").innerHTML=Math.round(cur.temperature_2m)+"°F";
-        if(id==="SHVR"){document.getElementById("tm").innerHTML=Math.round(cur.temperature_2m)+"°F";return;}
-        var v0=hr.visibility.shift();
-        var vis=Math.round((v0/1609.34)*10)/10;if(vis>10)vis=10;
-        var ceil=cur.cloud_cover_low>=60?1200:(cur.cloud_cover_low>=30?3500:99999);
-        var cat=catOf(ceil,vis);
-        var isBad=(ceil<(isNgt?MINS.ngtC:MINS.dayC)||vis<(isNgt?MINS.ngtV:MINS.dayV));
-        al[id]=isBad;uFoot();
-        var wd=cur.wind_speed_10m<2?"Calm":("00"+Math.round(cur.wind_direction_10m)).slice(-3)+"° "+Math.round(cur.wind_speed_10m)+"kt"+(cur.wind_gusts_10m>cur.wind_speed_10m+5?" G"+Math.round(cur.wind_gusts_10m):"");
-        var th="";
-        if(hasTaf){
-          var v3=Math.min(10,(hr.visibility.slice(2,3).pop()||v0)/1609.34),c3=(hr.cloud_cover_low.slice(3,4).pop()||0)>=60?1200:99999;
-          var v6=Math.min(10,(hr.visibility.slice(5,6).pop()||v0)/1609.34),c6=(hr.cloud_cover_low.slice(6,7).pop()||0)>=60?1200:99999;
-          th='<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+catOf(c3,v3)+'">+3H</div></td><td><div class="pill '+catOf(c6,v6)+'">+6H</div></td></tr></table></div>';
-        }
-        document.getElementById("c-"+id).innerHTML='<div class="card '+(isBad?"alert":"")+'"><div class="icao">'+id+'</div><div class="city">'+nm+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+vis+' SM</b></div><div class="m">Ceil: <b>'+(ceil>=99999?"CLR":ceil+" ft")+'</b></div><div class="m">Wx: <b>'+wxTxt(cur.weather_code)+'</b></div>'+th+'</div>';
-      }else if(id!=="SHVR"){
-        document.getElementById("ft").innerHTML="HTTP "+x.status+" ON "+id;
-      }
-    }
-  };
-  x.send();
-}
-function runWx(){
-  loadOne("KFAT","Fresno",36.776,-119.718,1);
-  loadOne("KFCH","Chandler",36.732,-119.820,0);
-  loadOne("KMAE","Madera",36.988,-120.112,0);
-  loadOne("KMCE","Merced",37.285,-120.514,1);
-  loadOne("KHJO","Hanford",36.316,-119.628,0);
-  loadOne("KVIS","Visalia",36.319,-119.393,1);
-  loadOne("SHVR","Shaver",37.104,-119.317,0);
-}
-runAstro();setImgs();runWx();
-setInterval(runAstro,30000);setInterval(setImgs,120000);setInterval(runWx,180000);
+function runWx(){loadOne("KFAT","Fresno",36.776,-119.718,1);loadOne("KFCH","Chandler",36.732,-119.820,0);loadOne("KMAE","Madera",36.988,-120.112,0);loadOne("KMCE","Merced",37.285,-120.514,1);loadOne("KHJO","Hanford",36.316,-119.628,0);loadOne("KVIS","Visalia",36.319,-119.393,1);loadOne("SHVR","Shaver",37.104,-119.317,0)}
+runAstro();setImgs();runWx();setInterval(runAstro,30000);setInterval(setImgs,120000);setInterval(runWx,180000);
 </script>
 </body>
 </html>
