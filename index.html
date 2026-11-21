@@ -14,7 +14,7 @@ table{border-collapse:collapse;width:100%}
 .sub{background:#131b26;border:1px solid #263342;border-radius:6px;padding:5px 12px;margin-bottom:8px;font-size:13px;color:#c9d1d9}
 .sub b{color:#fff}
 .grid td{width:14.28%;vertical-align:top;padding:0 3px}
-.card{background:#161f2c;border:2px solid #2b394a;border-radius:6px;padding:7px;height:215px;position:relative}
+.card{background:#161f2c;border:2px solid #2b394a;border-radius:6px;padding:7px;height:210px;position:relative}
 .card.alert{border-color:#f85149;background:#261418}
 .icao{font-size:19px;font-weight:bold;color:#fff}
 .city{font-size:10px;color:#8b949e;text-transform:uppercase;margin-bottom:5px}
@@ -45,71 +45,55 @@ table{border-collapse:collapse;width:100%}
 </tr></table>
 <table class="media"><tr>
 <td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Hanford (KHNX) Radar</div><img id="rad" src="https://weather.gov"></div></td>
-<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Owens Mountain (Foothills)</div><img id="cm" src="https://alertcalifornia.org"></div></td>
-<td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">SR-180 @ Clovis Ave (Valley)</div><img id="cv" src="https://ca.gov"></div></td>
+<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Delilah Lookout (Foothills)</div><img id="cm" src="https://alertcalifornia.org"></div></td>
+<td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Deadwood Mtn (North Foothills)</div><img id="cv" src="https://alertcalifornia.org"></div></td>
 </tr></table>
 <div class="foot" id="ft">LOADING WEATHER DATA...</div>
 <script>
-var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false;
-var STS=[{id:"KFAT",n:"Fresno",t:1},{id:"KFCH",n:"Chandler",t:0},{id:"KMAE",n:"Madera",t:0},{id:"KMCE",n:"Merced",t:1},{id:"O32",n:"Reedley",t:0,no:1},{id:"KHJO",n:"Hanford",t:0},{id:"KVIS",n:"Visalia",t:1}];
+var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false,al={};
+var STS=[{id:"KFAT",n:"Fresno",t:1,la:36.78,lo:-119.72},{id:"KFCH",n:"Chandler"},{id:"KMAE",n:"Madera"},{id:"KMCE",n:"Merced",t:1,la:37.28,lo:-120.51},{id:"O32",n:"Reedley",no:1},{id:"KHJO",n:"Hanford"},{id:"KVIS",n:"Visalia",t:1,la:36.32,lo:-119.39}];
 function p2(n){return(n<10?"0":"")+n}
 function astro(){
   var d=new Date();
   document.getElementById("clk").innerHTML=p2(d.getUTCHours())+":"+p2(d.getUTCMinutes())+" Z | "+p2(d.getHours())+":"+p2(d.getMinutes())+" LOCAL";
-  var doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
-  var dec=23.45*Math.sin((2*Math.PI/365)*(doy-81))*Math.PI/180;
-  var ha=Math.acos(-Math.tan(36.78*Math.PI/180)*Math.tan(dec))*180/Math.PI;
-  var noon=12-(-119.72/15)+(-d.getTimezoneOffset()/60);
-  var r=noon-ha/15,s=noon+ha/15;
-  function fh(x){var h=Math.floor(x);return p2(h)+":"+p2(Math.floor((x-h)*60))}
+  var doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5),dec=23.45*Math.sin((2*Math.PI/365)*(doy-81))*Math.PI/180;
+  var ha=Math.acos(-Math.tan(36.78*Math.PI/180)*Math.tan(dec))*180/Math.PI,noon=12-(-119.72/15)+(-d.getTimezoneOffset()/60);
+  var r=noon-ha/15,s=noon+ha/15,fh=function(x){var h=Math.floor(x);return p2(h)+":"+p2(Math.floor((x-h)*60))};
   document.getElementById("sr").innerHTML=fh(r);document.getElementById("ss").innerHTML=fh(s);
-  var cur=d.getHours()+d.getMinutes()/60;isNgt=(cur<r||cur>s);
+  isNgt=(d.getHours()+d.getMinutes()/60<r||d.getHours()+d.getMinutes()/60>s);
   var age=((d.getTime()-Date.UTC(2000,0,6,18,14))/864e5)%29.53059;if(age<0)age+=29.53059;
-  var il=Math.round((1-Math.cos(2*Math.PI*age/29.53059))/2*100);
   var ph=age<1.8?"New":age<5.5?"Wax Cres":age<9.2?"1st Qtr":age<12.9?"Wax Gib":age<16.6?"Full":age<20.3?"Wan Gib":age<24?"Last Qtr":"Wan Cres";
-  document.getElementById("mn").innerHTML=ph+" ("+il+"% Illum)";
+  document.getElementById("mn").innerHTML=ph+" ("+Math.round((1-Math.cos(2*Math.PI*age/29.53059))/2*100)+"% Illum)";
 }
-function ceilOf(c){if(!c)return 99999;var m=99999;for(var i=0;i<c.length;i++)if((c[i].cover=="BKN"||c[i].cover=="OVC"||c[i].cover=="OVX")&&c[i].base<m)m=c[i].base;return m}
 function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR"}
-function draw(s,m,t){
+function uFoot(){
+  var b=[],k;for(k in al)if(al[k])b.push(k);
+  var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";
+  ft.className=b.length?"foot alert":"foot";
+  ft.innerHTML=b.length?"BELOW MINIMUMS ["+md+"]: "+b.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ["+md+"]";
+}
+function draw(s,p){
   var el=document.getElementById("c-"+s.id);
-  if(s.no){el.innerHTML='<div class="card"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge UNK">NO AWOS</span><div class="m">Ref: KFAT/KVIS</div></div>';return 0}
-  if(!m){el.innerHTML='<div class="card"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge UNK">LOADING</span></div>';return 0}
-  var c=ceilOf(m.clouds),v=parseFloat(String(m.visib||10).replace("+",""))||10,cat=m.fltCat||catOf(c,v);
-  var bad=(c<(isNgt?MINS.ngtC:MINS.dayC)||v<(isNgt?MINS.ngtV:MINS.dayV));
-  var wd=m.wspd===0?"Calm":(m.wdir!=null?("00"+m.wdir).slice(-3)+"° ":"VRB ")+(m.wspd||0)+"kt"+(m.wgst?" G"+m.wgst:"");
-  var th="";
-  if(s.t){
-    var c0=cat,c3=cat,c6=cat,ns=Math.floor(Date.now()/1000);
-    if(t&&t.fcsts)for(var i=0;i<t.fcsts.length;i++){var f=t.fcsts[i],fc=catOf(ceilOf(f.clouds),parseFloat(String(f.visib||10).replace("+",""))||10);if(f.timeFrom<=ns+10800&&f.timeTo>=ns+10800)c3=fc;if(f.timeFrom<=ns+21600&&f.timeTo>=ns+21600)c6=fc}
-    th='<div class="taf"><table><tr><td><div class="pill '+c0+'">NOW</div></td><td><div class="pill '+c3+'">+3H</div></td><td><div class="pill '+c6+'">+6H</div></td></tr></table></div>';
-  }
-  el.innerHTML='<div class="card '+(bad?"alert":"")+'"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+v+' SM</b></div><div class="m">Ceil: <b>'+(c>=99999?"CLR":c+" ft")+'</b></div><div class="m">Wx: <b>'+(m.wxString||"None")+'</b></div>'+th+'</div>';
-  return bad;
+  if(s.no){el.innerHTML='<div class="card"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge UNK">NO AWOS</span><div class="m">Ref: KFAT/KVIS</div></div>';return}
+  if(!p){el.innerHTML='<div class="card"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge UNK">LOADING</span></div>';return}
+  var c=99999;if(p.cloudLayers)for(var i=0;i<p.cloudLayers.length;i++){var L=p.cloudLayers[i];if((L.amount=="BKN"||L.amount=="OVC"||L.amount=="VV")&&L.base&&L.base.value!=null){var f=Math.round(L.base.value*3.28084);if(f<c)c=f}}
+  var v=(p.visibility&&p.visibility.value!=null)?Math.round(p.visibility.value/160.934)/10:10,cat=catOf(c,v);
+  al[s.id]=(c<(isNgt?MINS.ngtC:MINS.dayC)||v<(isNgt?MINS.ngtV:MINS.dayV));uFoot();
+  var ws=(p.windSpeed&&p.windSpeed.value!=null)?Math.round(p.windSpeed.value*0.539957):0,wg=(p.windGust&&p.windGust.value!=null)?Math.round(p.windGust.value*0.539957):0;
+  var wd=ws===0?"Calm":((p.windDirection&&p.windDirection.value!=null)?("00"+Math.round(p.windDirection.value)).slice(-3)+"° ":"VRB ")+ws+"kt"+(wg?" G"+wg:"");
+  if(s.id=="KFAT"&&p.temperature&&p.temperature.value!=null)document.getElementById("tv").innerHTML=Math.round(p.temperature.value*9/5+32)+"°F";
+  var th=s.t?'<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+cat+'" id="t3-'+s.id+'">+3H</div></td><td><div class="pill '+cat+'" id="t6-'+s.id+'">+6H</div></td></tr></table></div>':"";
+  el.innerHTML='<div class="card '+(al[s.id]?"alert":"")+'"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+v+' SM</b></div><div class="m">Ceil: <b>'+(c>=99999?"CLR":c+" ft")+'</b></div><div class="m">Wx: <b>'+(p.textDescription||"None").slice(0,14)+'</b></div>'+th+'</div>';
+  if(s.t)get("https://open-meteo.com"+s.la+"&longitude="+s.lo+"&hourly=visibility&forecast_hours=8",function(d){if(d&&d.hourly&&d.hourly.visibility){var v3=d.hourly.visibility/1609.34,v6=d.hourly.visibility/1609.34;document.getElementById("t3-"+s.id).className="pill "+(v3<1?"LIFR":v3<3?"IFR":v3<=5?"MVFR":"VFR");document.getElementById("t6-"+s.id).className="pill "+(v6<1?"LIFR":v6<3?"IFR":v6<=5?"MVFR":"VFR")}});
 }
-function getJ(u,cb){
-  var x=new XMLHttpRequest();x.open("GET","https://allorigins.win"+encodeURIComponent(u),true);
-  x.onreadystatechange=function(){if(x.readyState==4){try{cb(JSON.parse(x.responseText))}catch(e){cb(null)}}};x.send();
-}
-function loadWx(){
-  getJ("https://aviationweather.gov",function(ms){
-    var mm={};if(ms)for(var i=0;i<ms.length;i++)mm[ms[i].icaoId]=ms[i];
-    if(mm.KFAT&&mm.KFAT.temp!=null)document.getElementById("tv").innerHTML=Math.round(mm.KFAT.temp*9/5+32)+"°F";
-    getJ("https://aviationweather.gov",function(ts){
-      var tm={},al=[];if(ts)for(var j=0;j<ts.length;j++)tm[ts[j].icaoId]=ts[j];
-      for(var k=0;k<STS.length;k++)if(draw(STS[k],mm[STS[k].id],tm[STS[k].id]))al.push(STS[k].id);
-      var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";
-      ft.className=al.length?"foot alert":"foot";
-      ft.innerHTML=al.length?"BELOW MINIMUMS ["+md+"]: "+al.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ["+md+"]";
-    });
-  });
-}
+function get(u,cb){var x=new XMLHttpRequest();x.open("GET",u,true);x.onreadystatechange=function(){if(x.readyState==4&&x.status==200)try{cb(JSON.parse(x.responseText))}catch(e){}};x.send()}
+function loadWx(){for(var i=0;i<STS.length;i++)(function(s){if(s.no)draw(s,null);else get("https://weather.gov"+s.id+"/observations/latest",function(d){if(d&&d.properties)draw(s,d.properties)})})(STS[i])}
 function loadTemps(){
-  var x=new XMLHttpRequest();x.open("GET","https://open-meteo.com",true);
-  x.onreadystatechange=function(){if(x.readyState==4&&x.status==200){var d=JSON.parse(x.responseText);if(d&&d.length>=2){if(document.getElementById("tv").innerHTML.indexOf("--")!=-1)document.getElementById("tv").innerHTML=Math.round(d[0].current.temperature_2m)+"°F";document.getElementById("tm").innerHTML=Math.round(d[1].current.temperature_2m)+"°F"}}};x.send();
+  get("https://open-meteo.com36.78&longitude=-119.72&current=temperature_2m&temperature_unit=fahrenheit",function(d){if(d&&d.current&&document.getElementById("tv").innerHTML.indexOf("--")!=-1)document.getElementById("tv").innerHTML=Math.round(d.current.temperature_2m)+"°F"});
+  get("https://open-meteo.com37.10&longitude=-119.32&current=temperature_2m&temperature_unit=fahrenheit",function(d){if(d&&d.current)document.getElementById("tm").innerHTML=Math.round(d.current.temperature_2m)+"°F"});
 }
-function refImg(){var t=Date.now();document.getElementById("rad").src="https://weather.gov?t="+t;document.getElementById("cm").src="https://alertcalifornia.org?t="+t;document.getElementById("cv").src="https://ca.gov?t="+t}
-for(var i=0;i<STS.length;i++)draw(STS[i],null,null);
+function refImg(){var t=Date.now();document.getElementById("rad").src="https://weather.gov?t="+t;document.getElementById("cm").src="https://alertcalifornia.org?t="+t;document.getElementById("cv").src="https://alertcalifornia.org?t="+t}
+for(var i=0;i<STS.length;i++)draw(STS[i],null);
 astro();loadWx();loadTemps();setInterval(astro,30000);setInterval(loadWx,180000);setInterval(loadTemps,600000);setInterval(refImg,120000);
 </script>
 </body>
