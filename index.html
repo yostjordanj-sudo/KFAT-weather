@@ -173,19 +173,19 @@
     <td style="width:30%; padding:0 6px;">
       <div class="media-box">
         <div class="box-title">Owens Mountain (Foothills)</div>
-        <img id="cam-mtn" class="cam-img" src="https://alertcalifornia.org" alt="Owens Mountain Cam">
+        <img id="cam-mtn" class="cam-img" src="https://alertcalifornia.org" onerror="this.onerror=null;this.src='https://ca.gov';" alt="Foothills Cam">
       </div>
     </td>
     <td style="width:30%; padding-left:6px;">
       <div class="media-box">
         <div class="box-title">SR-180 @ Clovis Ave (Valley)</div>
-        <img id="cam-valley" class="cam-img" src="https://ca.gov" alt="SR-180 Clovis Cam">
+        <img id="cam-valley" class="cam-img" src="https://ca.gov" onerror="this.onerror=null;this.src='https://ca.gov';" alt="Valley Cam">
       </div>
     </td>
   </tr>
 </table>
 
-<div class="status-footer" id="mins-footer">CHECKING REGIONAL MINIMUMS...</div>
+<div class="status-footer" id="mins-footer">LOADING WEATHER DATA...</div>
 
 <script>
 // ADJUST YOUR BASE MINIMUMS HERE (Ceiling in Feet AGL, Visibility in Statute Miles)
@@ -216,7 +216,6 @@ function updateClockAndAstro() {
   var lM = ("0" + now.getMinutes()).slice(-2);
   document.getElementById("clock").innerHTML = zH + ":" + zM + " Z &nbsp;|&nbsp; " + lH + ":" + lM + " LOCAL";
 
-  // Solar approximation for KFAT (36.78 N, -119.72 W)
   var start = new Date(now.getFullYear(), 0, 0);
   var dayOfYear = Math.floor((now - start) / 86400000);
   var decl = 23.45 * Math.sin((2 * Math.PI / 365) * (dayOfYear - 81)) * (Math.PI / 180);
@@ -238,7 +237,6 @@ function updateClockAndAstro() {
   var curDec = now.getHours() + (now.getMinutes() / 60);
   isNight = (curDec < riseDec || curDec > setDec);
 
-  // Moon phase & illumination
   var knownNew = new Date(Date.UTC(2000, 0, 6, 18, 14, 0));
   var synodic = 29.53058867;
   var age = ((now - knownNew) / 86400000) % synodic;
@@ -283,7 +281,7 @@ function renderCard(st, metar, taf) {
       '<div class="icao">' + st.id + '</div>' +
       '<div class="city">' + st.name + '</div>' +
       '<span class="badge UNK">NO AWOS</span>' +
-      '<div class="metric">Ref: See KFAT / KVIS</div>' +
+      '<div class="metric">Ref: KFAT / KVIS</div>' +
       '</div>';
     return false;
   }
@@ -309,5 +307,3 @@ function renderCard(st, metar, taf) {
 
   var wdir = (metar.wdir !== null && metar.wdir !== undefined) ? ("00" + metar.wdir).slice(-3) + "°" : "VRB";
   var wspd = (metar.wspd !== null && metar.wspd !== undefined) ? metar.wspd + " kt" : "0 kt";
-  if (metar.wspd === 0) { wdir = "Calm"; wspd = ""; }
-  var wgst = metar.wgst ? " G" + metar.wgst : "";
