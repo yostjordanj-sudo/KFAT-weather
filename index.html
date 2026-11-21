@@ -13,15 +13,15 @@ table{border-collapse:collapse;width:100%}
 .clock{font-size:17px;font-weight:bold;color:#79c0ff;text-align:right}
 .sub{background:#131b26;border:1px solid #263342;border-radius:6px;padding:5px 12px;margin-bottom:8px;font-size:13px;color:#c9d1d9}
 .sub b{color:#fff}
-.grid td{width:14.28%;vertical-align:top;padding:0 3px}
-.card{background:#161f2c;border:2px solid #2b394a;border-radius:6px;padding:7px;height:210px;position:relative}
+.grid td{width:16.66%;vertical-align:top;padding:0 4px}
+.card{background:#161f2c;border:2px solid #2b394a;border-radius:6px;padding:8px;height:215px;position:relative}
 .card.alert{border-color:#f85149;background:#261418}
-.icao{font-size:19px;font-weight:bold;color:#fff}
-.city{font-size:10px;color:#8b949e;text-transform:uppercase;margin-bottom:5px}
+.icao{font-size:20px;font-weight:bold;color:#fff}
+.city{font-size:11px;color:#8b949e;text-transform:uppercase;margin-bottom:5px}
 .badge{display:block;text-align:center;font-size:15px;font-weight:bold;padding:3px 0;border-radius:4px;margin-bottom:6px;color:#fff}
 .VFR{background:#1f7a38}.MVFR{background:#1b65b8}.IFR{background:#c92a2a}.LIFR{background:#a61e8b}.UNK{background:#3b4654}
 .m{font-size:12px;margin-bottom:3px;color:#c9d1d9}.m b{color:#fff}
-.taf{position:absolute;bottom:7px;left:7px;right:7px}
+.taf{position:absolute;bottom:8px;left:8px;right:8px}
 .taf td{width:33.3%;padding:0 1px}
 .pill{text-align:center;font-size:10px;font-weight:bold;padding:3px 0;border-radius:3px;color:#fff}
 .media{margin-top:8px}
@@ -41,17 +41,17 @@ table{border-collapse:collapse;width:100%}
 <td style="text-align:right">FRESNO: <b id="tv">--°F</b> | SHAVER LAKE: <b id="tm">--°F</b></td>
 </tr></table>
 <table class="grid"><tr>
-<td id="c-KFAT"></td><td id="c-KFCH"></td><td id="c-KMAE"></td><td id="c-KMCE"></td><td id="c-O32"></td><td id="c-KHJO"></td><td id="c-KVIS"></td>
+<td id="c-KFAT"></td><td id="c-KFCH"></td><td id="c-KMAE"></td><td id="c-KMCE"></td><td id="c-KHJO"></td><td id="c-KVIS"></td>
 </tr></table>
 <table class="media"><tr>
 <td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Hanford (KHNX) Radar</div><img id="rad" src="https://weather.gov"></div></td>
-<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Delilah Lookout (Foothills)</div><img id="cm" src="https://alertcalifornia.org"></div></td>
+<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Delilah Lookout (Foothills)</div><img id="cm" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-DelilahLookout2/latest-frame.jpg"></div></td>
 <td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Deadwood Mtn (North Foothills)</div><img id="cv" src="https://alertcalifornia.org"></div></td>
 </tr></table>
 <div class="foot" id="ft">LOADING WEATHER DATA...</div>
 <script>
 var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false,al={};
-var STS=[{id:"KFAT",n:"Fresno",t:1,la:36.78,lo:-119.72},{id:"KFCH",n:"Chandler"},{id:"KMAE",n:"Madera"},{id:"KMCE",n:"Merced",t:1,la:37.28,lo:-120.51},{id:"O32",n:"Reedley",no:1},{id:"KHJO",n:"Hanford"},{id:"KVIS",n:"Visalia",t:1,la:36.32,lo:-119.39}];
+var STS=[{id:"KFAT",n:"Fresno",t:1,la:36.78,lo:-119.72},{id:"KFCH",n:"Chandler"},{id:"KMAE",n:"Madera"},{id:"KMCE",n:"Merced",t:1,la:37.28,lo:-120.51},{id:"KHJO",n:"Hanford"},{id:"KVIS",n:"Visalia",t:1,la:36.32,lo:-119.39}];
 function p2(n){return(n<10?"0":"")+n}
 function astro(){
   var d=new Date();
@@ -74,7 +74,6 @@ function uFoot(){
 }
 function draw(s,p){
   var el=document.getElementById("c-"+s.id);
-  if(s.no){el.innerHTML='<div class="card"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge UNK">NO AWOS</span><div class="m">Ref: KFAT/KVIS</div></div>';return}
   if(!p){el.innerHTML='<div class="card"><div class="icao">'+s.id+'</div><div class="city">'+s.n+'</div><span class="badge UNK">LOADING</span></div>';return}
   var c=99999;if(p.cloudLayers)for(var i=0;i<p.cloudLayers.length;i++){var L=p.cloudLayers[i];if((L.amount=="BKN"||L.amount=="OVC"||L.amount=="VV")&&L.base&&L.base.value!=null){var f=Math.round(L.base.value*3.28084);if(f<c)c=f}}
   var v=(p.visibility&&p.visibility.value!=null)?Math.round(p.visibility.value/160.934)/10:10,cat=catOf(c,v);
@@ -87,12 +86,12 @@ function draw(s,p){
   if(s.t)get("https://open-meteo.com"+s.la+"&longitude="+s.lo+"&hourly=visibility&forecast_hours=8",function(d){if(d&&d.hourly&&d.hourly.visibility){var v3=d.hourly.visibility/1609.34,v6=d.hourly.visibility/1609.34;document.getElementById("t3-"+s.id).className="pill "+(v3<1?"LIFR":v3<3?"IFR":v3<=5?"MVFR":"VFR");document.getElementById("t6-"+s.id).className="pill "+(v6<1?"LIFR":v6<3?"IFR":v6<=5?"MVFR":"VFR")}});
 }
 function get(u,cb){var x=new XMLHttpRequest();x.open("GET",u,true);x.onreadystatechange=function(){if(x.readyState==4&&x.status==200)try{cb(JSON.parse(x.responseText))}catch(e){}};x.send()}
-function loadWx(){for(var i=0;i<STS.length;i++)(function(s){if(s.no)draw(s,null);else get("https://weather.gov"+s.id+"/observations/latest",function(d){if(d&&d.properties)draw(s,d.properties)})})(STS[i])}
+function loadWx(){for(var i=0;i<STS.length;i++)(function(s){get("https://weather.gov"+s.id+"/observations/latest",function(d){if(d&&d.properties)draw(s,d.properties)})})(STS[i])}
 function loadTemps(){
   get("https://open-meteo.com36.78&longitude=-119.72&current=temperature_2m&temperature_unit=fahrenheit",function(d){if(d&&d.current&&document.getElementById("tv").innerHTML.indexOf("--")!=-1)document.getElementById("tv").innerHTML=Math.round(d.current.temperature_2m)+"°F"});
   get("https://open-meteo.com37.10&longitude=-119.32&current=temperature_2m&temperature_unit=fahrenheit",function(d){if(d&&d.current)document.getElementById("tm").innerHTML=Math.round(d.current.temperature_2m)+"°F"});
 }
-function refImg(){var t=Date.now();document.getElementById("rad").src="https://weather.gov?t="+t;document.getElementById("cm").src="https://alertcalifornia.org?t="+t;document.getElementById("cv").src="https://alertcalifornia.org?t="+t}
+function refImg(){var t=Date.now();document.getElementById("rad").src="https://weather.gov?t="+t;document.getElementById("cm").src="https://alertcalifornia.org"+t;document.getElementById("cv").src="https://alertcalifornia.org?t="+t}
 for(var i=0;i<STS.length;i++)draw(STS[i],null);
 astro();loadWx();loadTemps();setInterval(astro,30000);setInterval(loadWx,180000);setInterval(loadTemps,600000);setInterval(refImg,120000);
 </script>
