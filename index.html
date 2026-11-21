@@ -50,14 +50,14 @@ table{border-collapse:collapse;width:100%}
 </tr></table>
 <table class="media"><tr>
 <td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Hanford (KHNX) Radar</div><img id="rad"></div></td>
-<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Delilah Lookout (Foothills)</div><img id="cm"></div></td>
-<td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Bear Mountain (Valley/Foothills)</div><img id="cv"></div></td>
+<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Bear Mountain (SE Foothills)</div><img id="cm"></div></td>
+<td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Goat Mtn Lookout (Bass Lake / N)</div><img id="cv"></div></td>
 </tr></table>
 <div class="foot" id="ft">LOADING AIRPORTS...</div>
 
 <script>
 var H="https:"+"//";
-var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false;
+var MINS={dayC:800,dayV:2,ngtC:1500,ngtV:3},isNgt=false,al={};
 function p2(n){return(n<10?"0":"")+n;}
 function runAstro(){
   var d=new Date();
@@ -79,52 +79,49 @@ function runAstro(){
 function setImgs(){
   var t=Date.now();
   document.getElementById("rad").src=H+"radar.weather.gov/ridge/standard/KHNX_loop.gif?t="+t;
-  document.getElementById("cm").src=H+"cameras.alertcalifornia.org/public-camera-data/Axis-DelilahLookout2/latest-frame.jpg?t="+t;
-  document.getElementById("cv").src=H+"cameras.alertcalifornia.org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
+  document.getElementById("cm").src=H+"cameras.alertcalifornia.org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
+  document.getElementById("cv").src=H+"cameras.alertcalifornia.org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
 }
 function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR";}
 function wxTxt(w){return w===0?"Clear":w<=3?"Clouds":w>=45&&w<=48?"Fog":w>=51&&w<=67?"Rain":w>=71&&w<=77?"Snow":w>=80?"Showers":"Fair";}
-function runWx(){
-  var lats="36.776,36.732,36.988,37.285,36.316,36.319,37.104";
-  var lons="-119.718,-119.820,-120.112,-120.514,-119.628,-119.393,-119.317";
-  var ids="KFAT,KFCH,KMAE,KMCE,KHJO,KVIS,SHVR".split(",");
-  var names="Fresno,Chandler,Madera,Merced,Hanford,Visalia,Shaver".split(",");
-  var hasTaf="1,0,0,1,0,1,0".split(",");
-  var url=H+"://open-meteo.com"+lats+"&longitude="+lons+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
-  var x=new XMLHttpRequest();
-  x.open("GET",url,true);
-  x.onreadystatechange=function(){
-    if(x.readyState===4){
-      if(x.status===200){
-        var arr=JSON.parse(x.responseText);
-        var bad=[];
-        for(var i=0;i<7;i++){
-          var d=arr.at(i),id=ids.at(i),nm=names.at(i),cur=d.current,hr=d.hourly;
-          if(id==="KFAT")document.getElementById("tv").innerHTML=Math.round(cur.temperature_2m)+"°F";
-          if(id==="SHVR"){document.getElementById("tm").innerHTML=Math.round(cur.temperature_2m)+"°F";continue;}
-          var vis=Math.round((hr.visibility.at(0)/1609.34)*10)/10;if(vis>10)vis=10;
-          var ceil=cur.cloud_cover_low>=60?1200:(cur.cloud_cover_low>=30?3500:99999);
-          var cat=catOf(ceil,vis);
-          var isBad=(ceil<(isNgt?MINS.ngtC:MINS.dayC)||vis<(isNgt?MINS.ngtV:MINS.dayV));
-          if(isBad)bad.push(id);
-          var wd=cur.wind_speed_10m<2?"Calm":("00"+Math.round(cur.wind_direction_10m)).slice(-3)+"° "+Math.round(cur.wind_speed_10m)+"kt"+(cur.wind_gusts_10m>cur.wind_speed_10m+5?" G"+Math.round(cur.wind_gusts_10m):"");
-          var th="";
-          if(hasTaf.at(i)==="1"){
-            var v3=Math.min(10,hr.visibility.at(3)/1609.34),c3=hr.cloud_cover_low.at(3)>=60?1200:99999;
-            var v6=Math.min(10,hr.visibility.at(6)/1609.34),c6=hr.cloud_cover_low.at(6)>=60?1200:99999;
-            th='<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+catOf(c3,v3)+'">+3H</div></td><td><div class="pill '+catOf(c6,v6)+'">+6H</div></td></tr></table></div>';
-          }
-          document.getElementById("c-"+id).innerHTML='<div class="card '+(isBad?"alert":"")+'"><div class="icao">'+id+'</div><div class="city">'+nm+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+vis+' SM</b></div><div class="m">Ceil: <b>'+(ceil>=99999?"CLR":ceil+" ft")+'</b></div><div class="m">Wx: <b>'+wxTxt(cur.weather_code)+'</b></div>'+th+'</div>';
-        }
-        var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";
-        ft.className=bad.length?"foot alert":"foot";
-        ft.innerHTML=bad.length?"BELOW MINIMUMS: "+bad.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ("+md+")";
-      }else{
-        document.getElementById("ft").innerHTML="FEED STATUS: HTTP "+x.status;
-      }
+function uFoot(){
+  var bad=[],k;for(k in al)if(al[k])bad.push(k);
+  var ft=document.getElementById("ft"),md=isNgt?"NIGHT ("+MINS.ngtC+"ft/"+MINS.ngtV+"SM)":"DAY ("+MINS.dayC+"ft/"+MINS.dayV+"SM)";
+  ft.className=bad.length?"foot alert":"foot";
+  ft.innerHTML=bad.length?"BELOW MINIMUMS: "+bad.join(", "):"ALL STATIONS AT OR ABOVE MINIMUMS ("+md+")";
+}
+function loadOne(id,nm,la,lo,hasTaf){
+  var u=H+"://open-meteo.com"+la+"&longitude="+lo+"&current=temperature_2m,weather_code,cloud_cover_low,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=visibility,cloud_cover_low&wind_speed_unit=kn&temperature_unit=fahrenheit&forecast_hours=8";
+  fetch(u).then(function(r){return r.json();}).then(function(d){
+    var cur=d.current,hr=d.hourly;
+    if(id==="KFAT")document.getElementById("tv").innerHTML=Math.round(cur.temperature_2m)+"°F";
+    if(id==="SHVR"){document.getElementById("tm").innerHTML=Math.round(cur.temperature_2m)+"°F";return;}
+    var v0=hr.visibility.shift();
+    var vis=Math.round((v0/1609.34)*10)/10;if(vis>10)vis=10;
+    var ceil=cur.cloud_cover_low>=60?1200:(cur.cloud_cover_low>=30?3500:99999);
+    var cat=catOf(ceil,vis);
+    var isBad=(ceil<(isNgt?MINS.ngtC:MINS.dayC)||vis<(isNgt?MINS.ngtV:MINS.dayV));
+    al[id]=isBad;uFoot();
+    var wd=cur.wind_speed_10m<2?"Calm":("00"+Math.round(cur.wind_direction_10m)).slice(-3)+"° "+Math.round(cur.wind_speed_10m)+"kt"+(cur.wind_gusts_10m>cur.wind_speed_10m+5?" G"+Math.round(cur.wind_gusts_10m):"");
+    var th="";
+    if(hasTaf){
+      var v3=Math.min(10,(hr.visibility.slice(2,3).pop()||v0)/1609.34),c3=(hr.cloud_cover_low.slice(3,4).pop()||0)>=60?1200:99999;
+      var v6=Math.min(10,(hr.visibility.slice(5,6).pop()||v0)/1609.34),c6=(hr.cloud_cover_low.slice(6,7).pop()||0)>=60?1200:99999;
+      th='<div class="taf"><table><tr><td><div class="pill '+cat+'">NOW</div></td><td><div class="pill '+catOf(c3,v3)+'">+3H</div></td><td><div class="pill '+catOf(c6,v6)+'">+6H</div></td></tr></table></div>';
     }
-  };
-  x.send();
+    document.getElementById("c-"+id).innerHTML='<div class="card '+(isBad?"alert":"")+'"><div class="icao">'+id+'</div><div class="city">'+nm+'</div><span class="badge '+cat+'">'+cat+'</span><div class="m">Wind: <b>'+wd+'</b></div><div class="m">Vis: <b>'+vis+' SM</b></div><div class="m">Ceil: <b>'+(ceil>=99999?"CLR":ceil+" ft")+'</b></div><div class="m">Wx: <b>'+wxTxt(cur.weather_code)+'</b></div>'+th+'</div>';
+  }).catch(function(e){
+    if(id!=="SHVR")document.getElementById("ft").innerHTML="ERR "+id+": "+e.message;
+  });
+}
+function runWx(){
+  loadOne("KFAT","Fresno",36.776,-119.718,1);
+  loadOne("KFCH","Chandler",36.732,-119.820,0);
+  loadOne("KMAE","Madera",36.988,-120.112,0);
+  loadOne("KMCE","Merced",37.285,-120.514,1);
+  loadOne("KHJO","Hanford",36.316,-119.628,0);
+  loadOne("KVIS","Visalia",36.319,-119.393,1);
+  loadOne("SHVR","Shaver",37.104,-119.317,0);
 }
 runAstro();setImgs();runWx();
 setInterval(runAstro,30000);setInterval(setImgs,120000);setInterval(runWx,180000);
