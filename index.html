@@ -27,8 +27,9 @@ table{border-collapse:collapse;width:100%}
 .media{margin-top:8px}
 .mbox{background:#161f2c;border:1px solid #2b394a;border-radius:6px;padding:7px;height:295px}
 .mtitle{font-size:12px;font-weight:bold;color:#9ecbff;margin-bottom:5px;text-transform:uppercase}
-.mbox img{width:100%;height:260px;object-fit:cover;background:#000;border-radius:4px}
-#rad{object-fit:contain}
+.rwrap{width:100%;height:260px;overflow:hidden;background:#000;border-radius:4px;position:relative}
+#rad{width:100%;height:100%;object-fit:contain;transform:scale(1.22);transform-origin:center 48%}
+.cam{width:100%;height:260px;object-fit:cover;background:#000;border-radius:4px}
 .foot{margin-top:8px;padding:7px;border-radius:6px;font-size:14px;font-weight:bold;text-align:center;background:#174928;border:1px solid #2ea043;color:#fff}
 .foot.alert{background:#5c191d;border-color:#f85149}
 </style>
@@ -49,9 +50,9 @@ table{border-collapse:collapse;width:100%}
 <td id="c-KVIS"><div class="card"><div class="icao">KVIS</div><div class="city">Visalia</div><span class="badge UNK">WAIT</span></div></td>
 </tr></table>
 <table class="media"><tr>
-<td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Pacific Southwest Radar</div><img id="rad"></div></td>
-<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Bear Mountain (SE Foothills)</div><img id="cm"></div></td>
-<td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Goat Mtn Lookout (Bass Lake / N)</div><img id="cv"></div></td>
+<td style="width:40%;padding-right:5px"><div class="mbox"><div class="mtitle">NWS Hanford (KHNX) Radar (Zoomed)</div><div class="rwrap"><img id="rad"></div></div></td>
+<td style="width:30%;padding:0 5px"><div class="mbox"><div class="mtitle">Bear Mountain 2 (Valley View)</div><img id="cm" class="cam"></div></td>
+<td style="width:30%;padding-left:5px"><div class="mbox"><div class="mtitle">Goat Mtn Lookout (Bass Lake / N)</div><img id="cv" class="cam"></div></td>
 </tr></table>
 <div class="foot" id="ft">LOADING AIRPORTS...</div>
 
@@ -81,8 +82,8 @@ function runAstro(){
 function setImgs(){
   var t=Date.now();
   var p=String.fromCharCode(104,116,116,112,115,58,47,47);
-  document.getElementById("rad").src=p+"radar."+"weather."+"gov/ridge/standard/PACSOUTHWEST_loop.gif?t="+t;
-  document.getElementById("cm").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
+  document.getElementById("rad").src=p+"radar."+"weather."+"gov/ridge/standard/KHNX_loop.gif?t="+t;
+  document.getElementById("cm").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno2/latest-frame.jpg?t="+t;
   document.getElementById("cv").src=p+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
 }
 function catOf(c,v){return(c<500||v<1)?"LIFR":(c<1000||v<3)?"IFR":(c<=3000||v<=5)?"MVFR":"VFR";}
