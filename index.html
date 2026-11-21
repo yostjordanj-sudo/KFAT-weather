@@ -29,7 +29,7 @@ table{border-collapse:collapse;width:100%}
 .mtitle{font-size:11px;font-weight:bold;color:#9ecbff;margin-bottom:5px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
 .rwrap{width:100%;height:262px;overflow:hidden;background:#0b131e;border-radius:4px;position:relative}
 .rwrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
-#rad{opacity:.85}
+#rad{opacity:.82}
 .cam{width:100%;height:262px;object-fit:cover;background:#000;border-radius:4px}
 .foot{margin-top:8px;padding:7px;border-radius:6px;font-size:14px;font-weight:bold;text-align:center;background:#174928;border:1px solid #2ea043;color:#fff}
 .foot.alert{background:#5c191d;border-color:#f85149}
@@ -69,8 +69,7 @@ function runAstro(){
 function setImgs(){
   var t=Date.now();
   document.getElementById("rmap").src=P+"a."+"basemaps."+"cartocdn."+"com/dark_all/7/21/49.png";
-  var rx=new XMLHttpRequest();rx.open("GET",P+"api."+"rainviewer."+"com/public/weather-maps.json",true);
-  rx.onreadystatechange=function(){if(rx.readyState===4&&rx.status===200){var j=JSON.parse(rx.responseText);if(j&&j.radar&&j.radar.past&&j.radar.past.length)document.getElementById("rad").src=P+"tilecache."+"rainviewer."+"com"+j.radar.past.pop().path+"/512/7/21/49/2/1_1.png"}};rx.send();
+  document.getElementById("rad").src=P+"opengeo."+"ncep."+"noaa."+"gov/geoserver/conus/conus_bref_qcd/ows?service=WMS&version=1.1.1&request=GetMap&layers=conus_bref_qcd&styles=&bbox=-13462700,4383204,-13149614,4696291&width=512&height=512&srs=EPSG:3857&format=image/png&transparent=true&t="+t;
   document.getElementById("c1").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-OwensMtn2/latest-frame.jpg?t="+t;
   document.getElementById("c2").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-BearMtnFresno1/latest-frame.jpg?t="+t;
   document.getElementById("c3").src=P+"cameras."+"alertcalifornia."+"org/public-camera-data/Axis-GoatMtnLookout1/latest-frame.jpg?t="+t;
