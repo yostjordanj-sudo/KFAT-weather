@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="600">
+<title>KFAT Regional Aviation Weather</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: #0d131a;
+    color: #e6edf3;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 12px 16px;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+  table { border-collapse: collapse; width: 100%; }
+  .header-bar {
+    background: #161f2c;
+    border: 1px solid #2b394a;
+    border-radius: 6px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+  }
+  .title { font-size: 20px; font-weight: bold; letter-spacing: 0.5px; color: #ffffff; }
+  .clock { font-size: 18px; font-weight: bold; color: #79c0ff; text-align: right; }
+  .sub-bar {
+    background: #131b26;
+    border: 1px solid #263342;
+    border-radius: 6px;
+    padding: 6px 14px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #c9d1d9;
+  }
+  .sub-bar span.val { color: #ffffff; font-weight: bold; }
+  .station-grid td {
+    width: 14.28%;
+    vertical-align: top;
+    padding: 0 4px;
+  }
+  .station-grid td:first-child { padding-left: 0; }
+  .station-grid td:last-child { padding-right: 0; }
+  .card {
+    background: #161f2c;
+    border: 2px solid #2b394a;
+    border-radius: 6px;
+    padding: 8px;
+    height: 235px;
+    position: relative;
+  }
+  .card.below-mins { border-color: #f85149; background: #261418; }
+  .icao { font-size: 20px; font-weight: bold; color: #ffffff; }
+  .city { font-size: 11px; color: #8b949e; text-transform: uppercase; margin-bottom: 6px; }
+  .badge {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 4px 0;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    color: #ffffff;
+  }
+  .VFR { background: #1f7a38; }
+  .MVFR { background: #1b65b8; }
+  .IFR { background: #c92a2a; }
+  .LIFR { background: #a61e8b; }
+  .UNK { background: #3b4654; color: #c9d1d9; }
+  .metric { font-size: 13px; margin-bottom: 4px; color: #c9d1d9; }
+  .metric strong { color: #ffffff; font-size: 14px; }
+  .taf-bar {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+  }
+  .taf-label { font-size: 10px; color: #8b949e; margin-bottom: 3px; text-transform: uppercase; }
+  .taf-cells td { width: 33.3%; padding: 0 1px; }
+  .taf-pill {
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 0;
+    border-radius: 3px;
+    color: #fff;
+  }
+  .media-row { margin-top: 10px; }
+  .media-box {
+    background: #161f2c;
+    border: 1px solid #2b394a;
+    border-radius: 6px;
+    padding: 8px;
+    height: 310px;
+  }
+  .box-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #9ecbff;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .radar-img {
+    width: 100%;
+    height: 270px;
+    object-fit: contain;
+    background: #000;
+    border-radius: 4px;
+  }
+  .cam-img {
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
+    background: #000;
+    border-radius: 4px;
+  }
+  .status-footer {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    background: #174928;
+    border: 1px solid #2ea043;
+    color: #ffffff;
+  }
+  .status-footer.alert {
+    background: #5c191d;
+    border-color: #f85149;
+  }
+</style>
+</head>
+<body>
+
+<table class="header-bar">
+  <tr>
+    <td class="title">KFAT REGIONAL AVIATION WEATHER</td>
+    <td class="clock" id="clock">LOADING TIME...</td>
+  </tr>
+</table>
+
+<table class="sub-bar">
+  <tr>
+    <td>SUNRISE: <span class="val" id="sunrise">--:--</span> &nbsp;|&nbsp; SUNSET: <span class="val" id="sunset">--:--</span></td>
+    <td style="text-align:center;">MOON: <span class="val" id="moon">--</span></td>
+    <td style="text-align:right;">FRESNO: <span class="val" id="temp-valley">--°F</span> &nbsp;|&nbsp; SHAVER LAKE: <span class="val" id="temp-mtn">--°F</span></td>
+  </tr>
+</table>
+
+<table class="station-grid" id="station-grid">
+  <tr>
+    <td id="cell-KFAT"></td>
+    <td id="cell-KFCH"></td>
+    <td id="cell-KMAE"></td>
+    <td id="cell-KMCE"></td>
+    <td id="cell-O32"></td>
+    <td id="cell-KHJO"></td>
+    <td id="cell-KVIS"></td>
+  </tr>
+</table>
+
+<table class="media-row">
+  <tr>
+    <td style="width:40%; padding-right:6px;">
+      <div class="media-box">
+        <div class="box-title">NWS Hanford (KHNX) Radar Loop</div>
+        <img id="radar-img" class="radar-img" src="https://weather.gov" alt="KHNX Radar">
+      </div>
+    </td>
+    <td style="width:30%; padding:0 6px;">
+      <div class="media-box">
+        <div class="box-title">Owens Mountain (Foothills)</div>
+        <img id="cam-mtn" class="cam-img" src="https://alertcalifornia.org" alt="Owens Mountain Cam">
+      </div>
+    </td>
+    <td style="width:30%; padding-left:6px;">
+      <div class="media-box">
+        <div class="box-title">SR-180 @ Clovis Ave (Valley)</div>
+        <img id="cam-valley" class="cam-img" src="https://ca.gov" alt="SR-180 Clovis Cam">
+      </div>
+    </td>
+  </tr>
+</table>
+
+<div class="status-footer" id="mins-footer">CHECKING REGIONAL MINIMUMS...</div>
+
+<script>
+// ADJUST YOUR BASE MINIMUMS HERE (Ceiling in Feet AGL, Visibility in Statute Miles)
+var MINS = {
+  dayCeil: 800,
+  dayVis: 2.0,
+  nightCeil: 1500,
+  nightVis: 3.0
+};
+
+var STATIONS = [
+  { id: "KFAT", name: "Fresno Yosemite", hasTaf: true },
+  { id: "KFCH", name: "Fresno Chandler", hasTaf: false },
+  { id: "KMAE", name: "Madera", hasTaf: false },
+  { id: "KMCE", name: "Merced", hasTaf: true },
+  { id: "O32",  name: "Reedley (No AWOS)", hasTaf: false, noReport: true },
+  { id: "KHJO", name: "Hanford", hasTaf: false },
+  { id: "KVIS", name: "Visalia", hasTaf: true }
+];
+
+var isNight = false;
+
+function updateClockAndAstro() {
+  var now = new Date();
+  var zH = ("0" + now.getUTCHours()).slice(-2);
+  var zM = ("0" + now.getUTCMinutes()).slice(-2);
+  var lH = ("0" + now.getHours()).slice(-2);
+  var lM = ("0" + now.getMinutes()).slice(-2);
+  document.getElementById("clock").innerHTML = zH + ":" + zM + " Z &nbsp;|&nbsp; " + lH + ":" + lM + " LOCAL";
+
+  // Solar approximation for KFAT (36.78 N, -119.72 W)
+  var start = new Date(now.getFullYear(), 0, 0);
+  var dayOfYear = Math.floor((now - start) / 86400000);
+  var decl = 23.45 * Math.sin((2 * Math.PI / 365) * (dayOfYear - 81)) * (Math.PI / 180);
+  var lat = 36.78 * (Math.PI / 180);
+  var ha = Math.acos(-Math.tan(lat) * Math.tan(decl)) * (180 / Math.PI);
+  var tzOffset = -now.getTimezoneOffset() / 60;
+  var solarNoon = 12 - (-119.72 / 15) + tzOffset;
+  var riseDec = solarNoon - (ha / 15);
+  var setDec = solarNoon + (ha / 15);
+
+  function fmtDec(d) {
+    var h = Math.floor(d);
+    var m = Math.floor((d - h) * 60);
+    return ("0" + h).slice(-2) + ":" + ("0" + m).slice(-2);
+  }
+  document.getElementById("sunrise").innerHTML = fmtDec(riseDec);
+  document.getElementById("sunset").innerHTML = fmtDec(setDec);
+
+  var curDec = now.getHours() + (now.getMinutes() / 60);
+  isNight = (curDec < riseDec || curDec > setDec);
+
+  // Moon phase & illumination
+  var knownNew = new Date(Date.UTC(2000, 0, 6, 18, 14, 0));
+  var synodic = 29.53058867;
+  var age = ((now - knownNew) / 86400000) % synodic;
+  if (age < 0) age += synodic;
+  var illum = Math.round((1 - Math.cos((2 * Math.PI * age) / synodic)) / 2 * 100);
+  var phase = "New Moon";
+  if (age < 1.8) phase = "New";
+  else if (age < 5.5) phase = "Waxing Crescent";
+  else if (age < 9.2) phase = "First Quarter";
+  else if (age < 12.9) phase = "Waxing Gibbous";
+  else if (age < 16.6) phase = "Full Moon";
+  else if (age < 20.3) phase = "Waning Gibbous";
+  else if (age < 24.0) phase = "Last Quarter";
+  else if (age < 27.7) phase = "Waning Crescent";
+  document.getElementById("moon").innerHTML = phase + " (" + illum + "% Illum)";
+}
+
+function getFlightCat(ceil, vis) {
+  if (ceil < 500 || vis < 1) return "LIFR";
+  if (ceil < 1000 || vis < 3) return "IFR";
+  if (ceil <= 3000 || vis <= 5) return "MVFR";
+  return "VFR";
+}
+
+function parseCeiling(clouds) {
+  if (!clouds || !clouds.length) return 99999;
+  var lowest = 99999;
+  for (var i = 0; i < clouds.length; i++) {
+    var cov = clouds[i].cover;
+    if ((cov === "BKN" || cov === "OVC" || cov === "OVX") && clouds[i].base !== null) {
+      if (clouds[i].base < lowest) lowest = clouds[i].base;
+    }
+  }
+  return lowest;
+}
+
+function renderCard(st, metar, taf) {
+  var cell = document.getElementById("cell-" + st.id);
+  if (st.noReport) {
+    cell.innerHTML =
+      '<div class="card">' +
+      '<div class="icao">' + st.id + '</div>' +
+      '<div class="city">' + st.name + '</div>' +
+      '<span class="badge UNK">NO AWOS</span>' +
+      '<div class="metric">Ref: See KFAT / KVIS</div>' +
+      '</div>';
+    return false;
+  }
+
+  if (!metar) {
+    cell.innerHTML =
+      '<div class="card">' +
+      '<div class="icao">' + st.id + '</div>' +
+      '<div class="city">' + st.name + '</div>' +
+      '<span class="badge UNK">NO DATA</span>' +
+      '</div>';
+    return false;
+  }
+
+  var ceil = parseCeiling(metar.clouds);
+  var vis = (metar.visib !== undefined && metar.visib !== null) ? parseFloat(String(metar.visib).replace("+", "")) : 10;
+  if (isNaN(vis)) vis = 10;
+  var cat = metar.fltCat || getFlightCat(ceil, vis);
+
+  var reqCeil = isNight ? MINS.nightCeil : MINS.dayCeil;
+  var reqVis = isNight ? MINS.nightVis : MINS.dayVis;
+  var below = (ceil < reqCeil || vis < reqVis);
+
+  var wdir = (metar.wdir !== null && metar.wdir !== undefined) ? ("00" + metar.wdir).slice(-3) + "°" : "VRB";
+  var wspd = (metar.wspd !== null && metar.wspd !== undefined) ? metar.wspd + " kt" : "0 kt";
+  if (metar.wspd === 0) { wdir = "Calm"; wspd = ""; }
+  var wgst = metar.wgst ? " G" + metar.wgst : "";
